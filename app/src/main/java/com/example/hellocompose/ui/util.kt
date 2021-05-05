@@ -15,6 +15,7 @@ import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigate
 import com.example.hellocompose.ui.theme.bottomNavBackColor
+import com.example.hellocompose.ui.theme.itemsColor
 import com.example.hellocompose.ui.theme.selectedItemBackColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -52,12 +53,14 @@ fun createBottomNavBar(
                 Modifier
             }
             BottomNavigationItem(
-                modifier = bottomNavigationItemModifier,
+//                modifier = bottomNavigationItemModifier,
                 icon = {
                     Icon(screen.imageVector, stringResource(screen.resourceId))
                 },
                 label = { Text(stringResource(screen.resourceId),fontSize = 12.sp,maxLines = 1) },
                 selected = currentRoute == screen.route,
+                selectedContentColor = itemsColor,
+                unselectedContentColor = Color.Black,
                 onClick = {
                     navController.navigate(screen.route) {
                         // Pop up to the start destination of the graph to
