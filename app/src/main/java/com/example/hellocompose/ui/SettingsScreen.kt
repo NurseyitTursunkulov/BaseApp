@@ -8,20 +8,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hellocompose.R
 import com.example.hellocompose.ui.theme.itemsColor
 
 @Composable
 fun SettingsScreen() {
     Column(modifier = Modifier.padding(28.dp)) {
-        Text("Личный кабинет", color = Color.Black, style = MaterialTheme.typography.h6)
+        Text(stringResource(R.string.settings_label), color = Color.Black, style = MaterialTheme.typography.h6)
         Spacer(Modifier.height(16.dp))
         var name by remember { mutableStateOf("") }
-        Text("имя")
+        Text(stringResource(R.string.name))
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -36,7 +38,7 @@ fun SettingsScreen() {
         )
         Spacer(Modifier.height(16.dp))
         var telefon by remember { mutableStateOf("") }
-        Text("телефон")
+        Text(stringResource(R.string.telefon))
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -69,7 +71,7 @@ fun SettingsScreen() {
 
         Spacer(Modifier.height(16.dp))
         var birthDate by remember { mutableStateOf("") }
-        Text("Дата рождения")
+        Text(stringResource(R.string.date_of_birth))
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -94,7 +96,7 @@ fun SettingsScreen() {
                 letterSpacing = 0.15.sp
             )
             Text(
-                "Баллы", style = style,
+                stringResource(R.string.points), style = style,
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 4.dp)
@@ -119,7 +121,7 @@ fun SettingsScreen() {
                 fontSize = 20.sp,
                 letterSpacing = 0.15.sp
             )
-            Text("Редактировать данные", style = style)
+            Text(stringResource(R.string.update_settings), style = style)
         }
     }
 }

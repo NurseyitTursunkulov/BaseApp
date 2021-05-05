@@ -3,4 +3,10 @@
     <string name="profile">личный кабинет</string>
     <string name="qr_code">QR-код</string>
     <string name="main">главная</string>
+    <string name="settings_label">Личный кабинет</string>
+    <string name="name">имя</string>
+    <string name="telefon">телефон</string>
+    <string name="date_of_birth">Дата рождения</string>
+    <string name="points">Баллы</string>
+    <string name="update_settings">Редактировать данные</string>
 </resources>
