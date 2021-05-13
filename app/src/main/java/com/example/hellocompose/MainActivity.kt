@@ -3,71 +3,63 @@ package com.example.hellocompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.*
-import com.example.hellocompose.ui.Screen
-import com.example.hellocompose.ui.SettingsScreen
-import com.example.hellocompose.ui.changeStatusBarColor
-import com.example.hellocompose.ui.createBottomNavBar
+import androidx.core.view.WindowCompat
+import com.example.hellocompose.domain.NavigationState
+import com.example.hellocompose.ui.*
 import com.example.hellocompose.ui.theme.HelloComposeTheme
-import com.example.hellocompose.ui.theme.itemsColor
+import com.google.accompanist.insets.ExperimentalAnimatedInsets
+import com.google.accompanist.insets.ProvideWindowInsets
+import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
+    val mainViewModel: MainViewModel by viewModel()
+
+    @OptIn(ExperimentalAnimatedInsets::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             changeStatusBarColor()
             HelloComposeTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                ProvideWindowInsets (windowInsetsAnimationsEnabled = true) {
+                    // A surface container using the 'background' color from the theme
+                    Surface(color = MaterialTheme.colors.background) {
+                        Greeting(mainViewModel)
+                    }
                 }
             }
         }
     }
 }
 
+@ExperimentalAnimatedInsets
 @Composable
-fun Greeting(name: String) {
-    val items = listOf(
-        Screen.Profile,
-        Screen.QrCode,
-        Screen.Main
-    )
-    val navController = rememberNavController()
-    Scaffold(
-        bottomBar = {
-            createBottomNavBar(navController, items)
+fun Greeting(exampleViewModel: MainViewModel = getViewModel()) {
+    var entryPointState = exampleViewModel.entryPointLiveData.observeAsState()
+    when (entryPointState.value?.getContentIfNotHandled()) {
+        is NavigationState.NavigateToMainScreen -> {
+            MainScreen(exampleViewModel)
         }
-    ) {
-
-        NavHost(navController, startDestination = Screen.Profile.route) {
-            composable(Screen.Profile.route) {
-                SettingsScreen()
-            }
-            composable(Screen.QrCode.route) {
-                Text("ddh")
-            }
-            composable(Screen.Main.route) {
-                Text("ooo")
-            }
+        is NavigationState.NavigateToLoginScreen -> {
+            authScreen(
+                onNumberSendClicked = {}
+            )
+        }
+        is NavigationState.ShowLoading -> {
+            splashScreen()
+        }
+        is NavigationState.ShowError -> {
+            Text("ShowError")
         }
     }
+
 
 }
 
@@ -75,6 +67,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     HelloComposeTheme {
-        Greeting("Android")
+        splashScreen()
     }
 }
