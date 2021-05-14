@@ -9,5 +9,7 @@
     <string name="date_of_birth">Дата рождения</string>
     <string name="points">Баллы</string>
     <string name="update_settings">Редактировать данные</string>
+    <string name="register">зарегистрироваться</string>
     <string name="authorization">Авторизация</string>
+    <string name="registration">Регистрация</string>
 </resources>

@@ -48,8 +48,8 @@ fun Greeting(exampleViewModel: MainViewModel = getViewModel()) {
             MainScreen(exampleViewModel)
         }
         is NavigationState.NavigateToLoginScreen -> {
-            authScreen(
-                onNumberSendClicked = {}
+            loginScreen(
+               exampleViewModel
             )
         }
         is NavigationState.ShowLoading -> {
