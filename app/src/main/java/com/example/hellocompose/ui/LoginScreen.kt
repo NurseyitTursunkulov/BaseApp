@@ -45,54 +45,20 @@ fun loginScreen(vm: MainViewModel) {
                 .padding(28.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(Modifier.height(16.dp))
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    stringResource(R.string.registration),
-                    color = Color.Black,
-                    style = MaterialTheme.typography.h6
-                )
-            }
+            headerText(stringResource(R.string.registration))
 
-            Spacer(Modifier.height(16.dp))
+
             var name by remember { mutableStateOf("") }
             var nameErrorText by remember { mutableStateOf("") }
             var nameContainsError by remember { mutableStateOf(false) }
             val nameColor = if (nameContainsError) Color.Red else Color.Unspecified
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.name), color = nameColor)
-                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                Text(nameErrorText, color = nameColor, maxLines = 1)
-
+            infoEnterField(nameColor, nameErrorText, name, nameContainsError,stringResource(R.string.name)) {
+                name = it
+                if (name.isNotEmpty()) {
+                    nameErrorText = ""
+                    nameContainsError = false
+                }
             }
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                value = name,
-                isError = nameContainsError,
-                onValueChange = {
-                    name = it
-                    if (name.isNotEmpty()) {
-                        nameErrorText = ""
-                        nameContainsError = false
-                    }
-                },
-//                        label = { Text("имя") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = itemsColor,
-                    cursorColor = itemsColor,
-                )
-            )
             Spacer(Modifier.height(16.dp))
             var surname by remember { mutableStateOf("") }
             Text(stringResource(R.string.surname))
@@ -102,7 +68,6 @@ fun loginScreen(vm: MainViewModel) {
                     .height(60.dp),
                 value = surname,
                 onValueChange = { surname = it },
-//                        label = { Text("имя") },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = itemsColor,
                     cursorColor = itemsColor,
@@ -256,6 +221,61 @@ fun loginScreen(vm: MainViewModel) {
 
             Spacer(Modifier.height(96.dp))
         }
+    }
+}
+
+@Composable
+private fun infoEnterField(
+    nameColor: Color,
+    nameErrorText: String,
+    name: String,
+    nameContainsError: Boolean,
+    textHeader:String,
+    onvalueChanged:(newValue:String)->Unit
+) {
+    Spacer(Modifier.height(16.dp))
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Text(textHeader, color = nameColor)
+        Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+        Text(nameErrorText, color = nameColor, maxLines = 1)
+
+    }
+    OutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp),
+        value = name,
+        isError = nameContainsError,
+        onValueChange = {
+            onvalueChanged(it)
+
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = itemsColor,
+            cursorColor = itemsColor,
+        )
+    )
+
+}
+
+@Composable
+private fun headerText(text:String) {
+    Spacer(Modifier.height(16.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text,
+            color = Color.Black,
+            style = MaterialTheme.typography.h6
+        )
     }
 }
 
