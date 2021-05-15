@@ -8,6 +8,8 @@
     <string name="surname">фамилия</string>
     <string name="telefon">телефон</string>
     <string name="date_of_birth">Дата рождения</string>
+    <string name="enter_correct_email">введите корректный email</string>
+    <string name="this_field_is_required">это поле обязательно для заполнения</string>
     <string name="already_signed_in">уже зарегистрированы?</string>
     <string name="autorize">авторизоваться</string>
     <string name="points">Баллы</string>

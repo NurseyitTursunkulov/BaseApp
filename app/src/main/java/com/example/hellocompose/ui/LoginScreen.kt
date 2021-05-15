@@ -1,5 +1,6 @@
 package com.example.hellocompose.ui
 
+import android.text.TextUtils
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -25,6 +26,7 @@ import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -35,8 +37,8 @@ import com.vanpra.composematerialdialogs.datetime.datepicker.datepicker
 @OptIn(ExperimentalAnimatedInsets::class)
 @Composable
 fun loginScreen(vm: MainViewModel) {
-    val name: String by vm.state.observeAsState("")
-    Log.d("Nurs", name)
+//    val name: String by vm.state.observeAsState("")
+//    Log.d("Nurs", name)
     ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
         Column(
             modifier = Modifier
@@ -59,13 +61,32 @@ fun loginScreen(vm: MainViewModel) {
 
             Spacer(Modifier.height(16.dp))
             var name by remember { mutableStateOf("") }
-            Text(stringResource(R.string.name))
+            var nameErrorText by remember { mutableStateOf("") }
+            var nameContainsError by remember { mutableStateOf(false) }
+            val nameColor = if (nameContainsError) Color.Red else Color.Unspecified
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.name), color = nameColor)
+                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+                Text(nameErrorText, color = nameColor, maxLines = 1)
+
+            }
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp),
                 value = name,
-                onValueChange = { name = it },
+                isError = nameContainsError,
+                onValueChange = {
+                    name = it
+                    if (name.isNotEmpty()) {
+                        nameErrorText = ""
+                        nameContainsError = false
+                    }
+                },
 //                        label = { Text("имя") },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = itemsColor,
@@ -105,13 +126,29 @@ fun loginScreen(vm: MainViewModel) {
             )
             Spacer(Modifier.height(16.dp))
             var email by remember { mutableStateOf("") }
-            Text("e-Mail")
+            var emailErrorText by remember { mutableStateOf("") }
+            var emailContainsError by remember { mutableStateOf(false) }
+            val color = if (emailContainsError) Color.Red else Color.Unspecified
+            Row() {
+                Text("e-Mail", color = color)
+                Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+                Text(emailErrorText, color = color, maxLines = 1)
+
+            }
+
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp),
                 value = email,
-                onValueChange = { email = it },
+                isError = emailContainsError,
+                onValueChange = {
+                    email = it
+                    if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        emailErrorText = ""
+                        emailContainsError = false
+                    }
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
 //                        label = { Text("телефон") },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -142,7 +179,8 @@ fun loginScreen(vm: MainViewModel) {
                     .fillMaxWidth()
                     .height(56.dp),
                 border = BorderStroke(
-                    ButtonDefaults.OutlinedBorderSize, MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                    ButtonDefaults.OutlinedBorderSize,
+                    MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
                 )
             ) {
                 val style = TextStyle(
@@ -150,7 +188,7 @@ fun loginScreen(vm: MainViewModel) {
                     fontSize = 15.sp,
                     letterSpacing = 0.1.sp
                 )
-                Text(text = birthDate,color = Color.Black,style = style)
+                Text(text = birthDate, color = Color.Black, style = style)
             }
             Spacer(Modifier.height(16.dp))
 
@@ -158,16 +196,34 @@ fun loginScreen(vm: MainViewModel) {
 
 
 /* This should be called in an onClick or an Effect */
-
+            val context = LocalContext.current.resources
             OutlinedButton(
                 onClick = {
-                    vm.login(
-                        name = name,
-                        surname = surname,
-                        phone = telefon,
-                        email = email,
-                        dateOfBirth = "2021-05-13"
-                    )
+                    if (email.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+                            .matches()
+                    ) {
+                        emailContainsError = true
+                        emailErrorText = context.getString(R.string.enter_correct_email)
+                    } else {
+                        emailContainsError = false
+                        emailErrorText = ""
+                    }
+
+                    if (name.isEmpty()) {
+                        nameContainsError = true
+                        nameErrorText = context.getString(R.string.this_field_is_required)
+                    } else {
+                        nameContainsError = false
+                        nameErrorText = ""
+                    }
+
+//                    vm.login(
+//                        name = name,
+//                        surname = surname,
+//                        phone = telefon,
+//                        email = email,
+//                        dateOfBirth = "2021-05-13"
+//                    )
                 },
                 modifier = Modifier
                     .navigationBarsWithImePadding()
