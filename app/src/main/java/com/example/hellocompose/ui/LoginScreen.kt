@@ -1,14 +1,11 @@
 package com.example.hellocompose.ui
 
-import android.text.TextUtils
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,27 +49,38 @@ fun loginScreen(vm: MainViewModel) {
             var nameErrorText by remember { mutableStateOf("") }
             var nameContainsError by remember { mutableStateOf(false) }
             val nameColor = if (nameContainsError) Color.Red else Color.Unspecified
-            infoEnterField(nameColor, nameErrorText, name, nameContainsError,stringResource(R.string.name)) {
-                name = it
-                if (name.isNotEmpty()) {
-                    nameErrorText = ""
-                    nameContainsError = false
+            infoEnterField(
+                color                   = nameColor,
+                errorText                   = nameErrorText,
+                value                   = name,
+                valueContainsError                  = nameContainsError,
+                textHeader                  = stringResource(R.string.name),
+                onvalueChanged                  = {
+                    name = it
+                    if (name.isNotEmpty()) {
+                        nameErrorText = ""
+                        nameContainsError = false
+                    }
+                }
+            )
+
+            var surName by remember { mutableStateOf("") }
+            var surNameErrorText by remember { mutableStateOf("") }
+            var surNameContainsError by remember { mutableStateOf(false) }
+            val surNameColor = if (surNameContainsError) Color.Red else Color.Unspecified
+            infoEnterField(
+               color              =  surNameColor,
+               errorText          =  surNameErrorText,
+               value              =  surName,
+               valueContainsError =  surNameContainsError,
+               textHeader         =  stringResource(R.string.surname)
+            ) {
+                surName = it
+                if (surName.isNotEmpty()) {
+                    surNameErrorText = ""
+                    surNameContainsError = false
                 }
             }
-            Spacer(Modifier.height(16.dp))
-            var surname by remember { mutableStateOf("") }
-            Text(stringResource(R.string.surname))
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                value = surname,
-                onValueChange = { surname = it },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = itemsColor,
-                    cursorColor = itemsColor,
-                )
-            )
             Spacer(Modifier.height(16.dp))
             var telefon by remember { mutableStateOf("") }
             Text(stringResource(R.string.telefon))
@@ -182,6 +190,14 @@ fun loginScreen(vm: MainViewModel) {
                         nameErrorText = ""
                     }
 
+                    if (surName.isEmpty()) {
+                        surNameContainsError = true
+                        surNameErrorText = context.getString(R.string.this_field_is_required)
+                    } else {
+                        surNameContainsError = false
+                        surNameErrorText = ""
+                    }
+
 //                    vm.login(
 //                        name = name,
 //                        surname = surname,
@@ -226,12 +242,12 @@ fun loginScreen(vm: MainViewModel) {
 
 @Composable
 private fun infoEnterField(
-    nameColor: Color,
-    nameErrorText: String,
-    name: String,
-    nameContainsError: Boolean,
-    textHeader:String,
-    onvalueChanged:(newValue:String)->Unit
+    color: Color,
+    errorText: String,
+    value: String,
+    valueContainsError: Boolean,
+    textHeader: String,
+    onvalueChanged: (newValue: String) -> Unit
 ) {
     Spacer(Modifier.height(16.dp))
     Row(
@@ -239,17 +255,17 @@ private fun infoEnterField(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        Text(textHeader, color = nameColor)
+        Text(textHeader, color = color)
         Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-        Text(nameErrorText, color = nameColor, maxLines = 1)
+        Text(errorText, color = color, maxLines = 1)
 
     }
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
-        value = name,
-        isError = nameContainsError,
+        value = value,
+        isError = valueContainsError,
         onValueChange = {
             onvalueChanged(it)
 
@@ -263,7 +279,7 @@ private fun infoEnterField(
 }
 
 @Composable
-private fun headerText(text:String) {
+private fun headerText(text: String) {
     Spacer(Modifier.height(16.dp))
     Column(
         modifier = Modifier
