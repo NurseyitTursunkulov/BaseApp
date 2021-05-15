@@ -25,6 +25,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import com.example.hellocompose.ui.util.birthDateButton
+import com.example.hellocompose.ui.util.headerText
+import com.example.hellocompose.ui.util.infoEnterField
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -51,12 +54,12 @@ fun loginScreen(vm: MainViewModel) {
             var nameContainsError by remember { mutableStateOf(false) }
             val nameColor = if (nameContainsError) Color.Red else Color.Unspecified
             infoEnterField(
-                color                   = nameColor,
-                errorText                   = nameErrorText,
-                value                   = name,
-                valueContainsError                  = nameContainsError,
-                textHeader                  = stringResource(R.string.name),
-                onvalueChanged                  = {
+                color = nameColor,
+                errorText = nameErrorText,
+                value = name,
+                valueContainsError = nameContainsError,
+                textHeader = stringResource(R.string.name),
+                onvalueChanged = {
                     name = it
                     if (name.isNotEmpty()) {
                         nameErrorText = ""
@@ -70,11 +73,11 @@ fun loginScreen(vm: MainViewModel) {
             var surNameContainsError by remember { mutableStateOf(false) }
             val surNameColor = if (surNameContainsError) Color.Red else Color.Unspecified
             infoEnterField(
-               color              =  surNameColor,
-               errorText          =  surNameErrorText,
-               value              =  surName,
-               valueContainsError =  surNameContainsError,
-               textHeader         =  stringResource(R.string.surname)
+                color = surNameColor,
+                errorText = surNameErrorText,
+                value = surName,
+                valueContainsError = surNameContainsError,
+                textHeader = stringResource(R.string.surname)
             ) {
                 surName = it
                 if (surName.isNotEmpty()) {
@@ -88,12 +91,12 @@ fun loginScreen(vm: MainViewModel) {
             var phoneNumberContainsError by remember { mutableStateOf(false) }
             val phoneNumberColor = if (phoneNumberContainsError) Color.Red else Color.Unspecified
             infoEnterField(
-                color              =  phoneNumberColor,
-                errorText          =  phoneNumberErrorText,
-                value              =  phoneNumber,
-                valueContainsError =  phoneNumberContainsError,
+                color = phoneNumberColor,
+                errorText = phoneNumberErrorText,
+                value = phoneNumber,
+                valueContainsError = phoneNumberContainsError,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                textHeader         =  stringResource(R.string.telefon)
+                textHeader = stringResource(R.string.telefon)
             ) {
                 phoneNumber = it
                 if (phoneNumber.isNotEmpty()) {
@@ -109,12 +112,12 @@ fun loginScreen(vm: MainViewModel) {
             val color = if (emailContainsError) Color.Red else Color.Unspecified
 
             infoEnterField(
-                color              =  color,
-                errorText          =  emailErrorText,
-                value              =  email,
-                valueContainsError =  emailContainsError,
+                color = color,
+                errorText = emailErrorText,
+                value = email,
+                valueContainsError = emailContainsError,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                textHeader         =  "e-Mail"
+                textHeader = "e-Mail"
             ) {
                 email = it
                 if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -123,42 +126,24 @@ fun loginScreen(vm: MainViewModel) {
                 }
             }
 
-            Spacer(Modifier.height(16.dp))
             var birthDate by remember { mutableStateOf("") }
-            Text(stringResource(R.string.date_of_birth))
-            val dialog = remember { MaterialDialog() }
-            dialog.build {
-
-                datepicker { date ->
-                    birthDate = date.toString()
-                    // Do stuff with java.time.LocalDate object which is passed in
+            var birthDateErrorText by remember { mutableStateOf("") }
+            var birthDateContainsError by remember { mutableStateOf(false) }
+            val birthDateColor = if (birthDateContainsError) Color.Red else Color.Unspecified
+            birthDateButton(
+                birthDateColor,
+                birthDateErrorText,
+                color,
+                birthDate,
+                birthDateContainsError,
+                onDateSelected = {
+                    birthDate = it.toString()
+                    birthDateErrorText = ""
+                    birthDateContainsError = false
                 }
-                buttons {
-                    positiveButton("Ok")
-                    negativeButton("Cancel")
-                }
-            }
-            Spacer(Modifier.padding(4.dp))
-            OutlinedButton(
-                onClick = { dialog.show() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                border = BorderStroke(
-                    ButtonDefaults.OutlinedBorderSize,
-                    MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
-                )
-            ) {
-                val style = TextStyle(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 15.sp,
-                    letterSpacing = 0.1.sp
-                )
-                Text(text = birthDate, color = Color.Black, style = style)
-            }
-            Spacer(Modifier.height(16.dp))
+            )
+            Spacer(Modifier.height(32.dp))
 
-            Spacer(Modifier.height(16.dp))
 
 
 /* This should be called in an onClick or an Effect */
@@ -197,6 +182,13 @@ fun loginScreen(vm: MainViewModel) {
                     } else {
                         phoneNumberContainsError = false
                         phoneNumberErrorText = ""
+                    }
+                    if (birthDate.isEmpty()) {
+                        birthDateContainsError = true
+                        birthDateErrorText = context.getString(R.string.this_field_is_required)
+                    } else {
+                        birthDateContainsError = false
+                        birthDateErrorText = ""
                     }
 
 
@@ -239,63 +231,6 @@ fun loginScreen(vm: MainViewModel) {
 
             Spacer(Modifier.height(96.dp))
         }
-    }
-}
-
-@Composable
-private fun infoEnterField(
-    color: Color,
-    errorText: String,
-    value: String,
-    valueContainsError: Boolean,
-    textHeader: String,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    onvalueChanged: (newValue: String) -> Unit
-) {
-    Spacer(Modifier.height(16.dp))
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        Text(textHeader, color = color)
-        Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-        Text(errorText, color = color, maxLines = 1,overflow = TextOverflow.Ellipsis)
-
-    }
-    OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp),
-        value = value,
-        isError = valueContainsError,
-        keyboardOptions = keyboardOptions,
-        onValueChange = {
-            onvalueChanged(it)
-
-        },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = itemsColor,
-            cursorColor = itemsColor,
-        )
-    )
-
-}
-
-@Composable
-private fun headerText(text: String) {
-    Spacer(Modifier.height(16.dp))
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text,
-            color = Color.Black,
-            style = MaterialTheme.typography.h6
-        )
     }
 }
 
