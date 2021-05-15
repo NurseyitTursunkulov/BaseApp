@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hellocompose.R
 import com.example.hellocompose.ui.theme.itemsColor
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.buttons
 import com.vanpra.composematerialdialogs.datetime.datepicker.datepicker
@@ -117,6 +119,31 @@ fun birthDateButton(
             letterSpacing = 0.1.sp
         )
         Text(text = birthDate, color = Color.Black, style = style)
+    }
+}
+
+@Composable
+fun registerButton(
+    modifier: Modifier,
+    onClick:()->Unit
+){
+    Spacer(Modifier.height(32.dp))
+    OutlinedButton(
+        onClick = {
+                onClick()
+        },
+        modifier = modifier
+            .navigationBarsWithImePadding(),
+//            .align(alignment = Alignment.CenterHorizontally),  //avoid the oval shape
+        border = BorderStroke(1.dp, itemsColor),
+        colors = ButtonDefaults.outlinedButtonColors(contentColor = itemsColor)
+    ) {
+        val style = TextStyle(
+            fontWeight = FontWeight.Normal,
+            fontSize = 20.sp,
+            letterSpacing = 0.15.sp
+        )
+        Text(stringResource(R.string.register), style = style)
     }
 }
 

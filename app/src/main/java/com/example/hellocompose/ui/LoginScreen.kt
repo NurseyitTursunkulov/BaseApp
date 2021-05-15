@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.example.hellocompose.ui.util.birthDateButton
 import com.example.hellocompose.ui.util.headerText
 import com.example.hellocompose.ui.util.infoEnterField
+import com.example.hellocompose.ui.util.registerButton
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -142,54 +143,49 @@ fun loginScreen(vm: MainViewModel) {
                     birthDateContainsError = false
                 }
             )
-            Spacer(Modifier.height(32.dp))
 
-
-
-/* This should be called in an onClick or an Effect */
             val context = LocalContext.current.resources
-            OutlinedButton(
-                onClick = {
-                    if (email.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
-                            .matches()
-                    ) {
-                        emailContainsError = true
-                        emailErrorText = context.getString(R.string.enter_correct_email)
-                    } else {
-                        emailContainsError = false
-                        emailErrorText = ""
-                    }
+            registerButton(modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
+                if (email.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+                        .matches()
+                ) {
+                    emailContainsError = true
+                    emailErrorText = context.getString(R.string.enter_correct_email)
+                } else {
+                    emailContainsError = false
+                    emailErrorText = ""
+                }
 
-                    if (name.isEmpty()) {
-                        nameContainsError = true
-                        nameErrorText = context.getString(R.string.this_field_is_required)
-                    } else {
-                        nameContainsError = false
-                        nameErrorText = ""
-                    }
+                if (name.isEmpty()) {
+                    nameContainsError = true
+                    nameErrorText = context.getString(R.string.this_field_is_required)
+                } else {
+                    nameContainsError = false
+                    nameErrorText = ""
+                }
 
-                    if (surName.isEmpty()) {
-                        surNameContainsError = true
-                        surNameErrorText = context.getString(R.string.this_field_is_required)
-                    } else {
-                        surNameContainsError = false
-                        surNameErrorText = ""
-                    }
+                if (surName.isEmpty()) {
+                    surNameContainsError = true
+                    surNameErrorText = context.getString(R.string.this_field_is_required)
+                } else {
+                    surNameContainsError = false
+                    surNameErrorText = ""
+                }
 
-                    if (phoneNumber.isEmpty()) {
-                        phoneNumberContainsError = true
-                        phoneNumberErrorText = context.getString(R.string.this_field_is_required)
-                    } else {
-                        phoneNumberContainsError = false
-                        phoneNumberErrorText = ""
-                    }
-                    if (birthDate.isEmpty()) {
-                        birthDateContainsError = true
-                        birthDateErrorText = context.getString(R.string.this_field_is_required)
-                    } else {
-                        birthDateContainsError = false
-                        birthDateErrorText = ""
-                    }
+                if (phoneNumber.isEmpty()) {
+                    phoneNumberContainsError = true
+                    phoneNumberErrorText = context.getString(R.string.this_field_is_required)
+                } else {
+                    phoneNumberContainsError = false
+                    phoneNumberErrorText = ""
+                }
+                if (birthDate.isEmpty()) {
+                    birthDateContainsError = true
+                    birthDateErrorText = context.getString(R.string.this_field_is_required)
+                } else {
+                    birthDateContainsError = false
+                    birthDateErrorText = ""
+                }
 
 
 //                    vm.login(
@@ -199,19 +195,7 @@ fun loginScreen(vm: MainViewModel) {
 //                        email = email,
 //                        dateOfBirth = "2021-05-13"
 //                    )
-                },
-                modifier = Modifier
-                    .navigationBarsWithImePadding()
-                    .align(alignment = Alignment.CenterHorizontally),  //avoid the oval shape
-                border = BorderStroke(1.dp, itemsColor),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = itemsColor)
-            ) {
-                val style = TextStyle(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp,
-                    letterSpacing = 0.15.sp
-                )
-                Text(stringResource(R.string.register), style = style)
+
             }
 
             Column(
