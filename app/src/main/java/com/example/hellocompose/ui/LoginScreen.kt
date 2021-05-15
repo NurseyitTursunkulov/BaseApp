@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -81,54 +82,46 @@ fun loginScreen(vm: MainViewModel) {
                     surNameContainsError = false
                 }
             }
-            Spacer(Modifier.height(16.dp))
-            var telefon by remember { mutableStateOf("") }
-            Text(stringResource(R.string.telefon))
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                value = telefon,
-                onValueChange = { telefon = it },
+
+            var phoneNumber by remember { mutableStateOf("") }
+            var phoneNumberErrorText by remember { mutableStateOf("") }
+            var phoneNumberContainsError by remember { mutableStateOf(false) }
+            val phoneNumberColor = if (phoneNumberContainsError) Color.Red else Color.Unspecified
+            infoEnterField(
+                color              =  phoneNumberColor,
+                errorText          =  phoneNumberErrorText,
+                value              =  phoneNumber,
+                valueContainsError =  phoneNumberContainsError,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//                        label = { Text("телефон") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = itemsColor,
-                    cursorColor = itemsColor,
-                )
-            )
-            Spacer(Modifier.height(16.dp))
+                textHeader         =  stringResource(R.string.telefon)
+            ) {
+                phoneNumber = it
+                if (phoneNumber.isNotEmpty()) {
+                    phoneNumberErrorText = ""
+                    phoneNumberContainsError = false
+                }
+            }
+
+//            Spacer(Modifier.height(16.dp))
             var email by remember { mutableStateOf("") }
             var emailErrorText by remember { mutableStateOf("") }
             var emailContainsError by remember { mutableStateOf(false) }
             val color = if (emailContainsError) Color.Red else Color.Unspecified
-            Row() {
-                Text("e-Mail", color = color)
-                Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-                Text(emailErrorText, color = color, maxLines = 1)
 
-            }
-
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                value = email,
-                isError = emailContainsError,
-                onValueChange = {
-                    email = it
-                    if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        emailErrorText = ""
-                        emailContainsError = false
-                    }
-                },
+            infoEnterField(
+                color              =  color,
+                errorText          =  emailErrorText,
+                value              =  email,
+                valueContainsError =  emailContainsError,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-//                        label = { Text("телефон") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = itemsColor,
-                    cursorColor = itemsColor,
-                )
-            )
+                textHeader         =  "e-Mail"
+            ) {
+                email = it
+                if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    emailErrorText = ""
+                    emailContainsError = false
+                }
+            }
 
             Spacer(Modifier.height(16.dp))
             var birthDate by remember { mutableStateOf("") }
@@ -198,6 +191,15 @@ fun loginScreen(vm: MainViewModel) {
                         surNameErrorText = ""
                     }
 
+                    if (phoneNumber.isEmpty()) {
+                        phoneNumberContainsError = true
+                        phoneNumberErrorText = context.getString(R.string.this_field_is_required)
+                    } else {
+                        phoneNumberContainsError = false
+                        phoneNumberErrorText = ""
+                    }
+
+
 //                    vm.login(
 //                        name = name,
 //                        surname = surname,
@@ -247,6 +249,7 @@ private fun infoEnterField(
     value: String,
     valueContainsError: Boolean,
     textHeader: String,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onvalueChanged: (newValue: String) -> Unit
 ) {
     Spacer(Modifier.height(16.dp))
@@ -257,7 +260,7 @@ private fun infoEnterField(
     ) {
         Text(textHeader, color = color)
         Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-        Text(errorText, color = color, maxLines = 1)
+        Text(errorText, color = color, maxLines = 1,overflow = TextOverflow.Ellipsis)
 
     }
     OutlinedTextField(
@@ -266,6 +269,7 @@ private fun infoEnterField(
             .height(60.dp),
         value = value,
         isError = valueContainsError,
+        keyboardOptions = keyboardOptions,
         onValueChange = {
             onvalueChanged(it)
 
