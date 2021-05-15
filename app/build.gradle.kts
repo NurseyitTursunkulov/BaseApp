@@ -85,5 +85,6 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
     implementation ("com.google.accompanist:accompanist-insets:0.9.1")
+    implementation ("io.github.vanpra.compose-material-dialogs:datetime:0.4.0")
 
 }

@@ -2,6 +2,7 @@ package com.example.hellocompose.ui
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -26,6 +27,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.buttons
+import com.vanpra.composematerialdialogs.datetime.datepicker.datepicker
 
 
 @OptIn(ExperimentalAnimatedInsets::class)
@@ -35,7 +39,9 @@ fun loginScreen(vm: MainViewModel) {
     Log.d("Nurs", name)
     ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
         Column(
-            modifier = Modifier.padding(28.dp).verticalScroll(rememberScrollState())
+            modifier = Modifier
+                .padding(28.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Spacer(Modifier.height(16.dp))
             Column(
@@ -60,6 +66,21 @@ fun loginScreen(vm: MainViewModel) {
                     .height(60.dp),
                 value = name,
                 onValueChange = { name = it },
+//                        label = { Text("имя") },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = itemsColor,
+                    cursorColor = itemsColor,
+                )
+            )
+            Spacer(Modifier.height(16.dp))
+            var surname by remember { mutableStateOf("") }
+            Text(stringResource(R.string.surname))
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                value = surname,
+                onValueChange = { surname = it },
 //                        label = { Text("имя") },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = itemsColor,
@@ -102,30 +123,55 @@ fun loginScreen(vm: MainViewModel) {
             Spacer(Modifier.height(16.dp))
             var birthDate by remember { mutableStateOf("") }
             Text(stringResource(R.string.date_of_birth))
-            OutlinedTextField(
+            val dialog = remember { MaterialDialog() }
+            dialog.build {
+
+                datepicker { date ->
+                    birthDate = date.toString()
+                    // Do stuff with java.time.LocalDate object which is passed in
+                }
+                buttons {
+                    positiveButton("Ok")
+                    negativeButton("Cancel")
+                }
+            }
+            Spacer(Modifier.padding(4.dp))
+            OutlinedButton(
+                onClick = { dialog.show() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp),
-                value = birthDate,
-                onValueChange = { birthDate = it },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//                        label = { Text("телефон") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = itemsColor,
-                    cursorColor = itemsColor,
-                    focusedLabelColor = Color.Cyan
+                    .height(56.dp),
+                border = BorderStroke(
+                    ButtonDefaults.OutlinedBorderSize, MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
                 )
-            )
-            Spacer(Modifier.height(16.dp))
+            ) {
+                val style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 15.sp,
+                    letterSpacing = 0.1.sp
+                )
+                Text(text = birthDate,color = Color.Black,style = style)
+            }
             Spacer(Modifier.height(16.dp))
 
             Spacer(Modifier.height(16.dp))
+
+
+/* This should be called in an onClick or an Effect */
+
             OutlinedButton(
                 onClick = {
-                    vm.makeSuspendCall()
+                    vm.login(
+                        name = name,
+                        surname = surname,
+                        phone = telefon,
+                        email = email,
+                        dateOfBirth = "2021-05-13"
+                    )
                 },
-                modifier = Modifier.navigationBarsWithImePadding().align(alignment = Alignment.CenterHorizontally)
-                    ,  //avoid the oval shape
+                modifier = Modifier
+                    .navigationBarsWithImePadding()
+                    .align(alignment = Alignment.CenterHorizontally),  //avoid the oval shape
                 border = BorderStroke(1.dp, itemsColor),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = itemsColor)
             ) {
@@ -136,6 +182,21 @@ fun loginScreen(vm: MainViewModel) {
                 )
                 Text(stringResource(R.string.register), style = style)
             }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.already_signed_in))
+                Spacer(modifier = Modifier.padding(4.dp))
+                Text(
+                    stringResource(R.string.autorize),
+                    color = Color.Blue,
+                    modifier = Modifier.clickable {
+
+                    })
+            }
+
 
             Spacer(Modifier.height(96.dp))
         }
