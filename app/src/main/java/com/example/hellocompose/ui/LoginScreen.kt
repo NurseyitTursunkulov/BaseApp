@@ -1,39 +1,24 @@
 package com.example.hellocompose.ui
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.hellocompose.R
 import com.example.hellocompose.ui.theme.HelloComposeTheme
-import com.example.hellocompose.ui.theme.itemsColor
+import com.example.hellocompose.ui.util.*
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
-import com.example.hellocompose.ui.util.birthDateButton
-import com.example.hellocompose.ui.util.headerText
-import com.example.hellocompose.ui.util.infoEnterField
-import com.example.hellocompose.ui.util.registerButton
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.buttons
-import com.vanpra.composematerialdialogs.datetime.datepicker.datepicker
 
 
 @OptIn(ExperimentalAnimatedInsets::class)
@@ -106,7 +91,6 @@ fun loginScreen(vm: MainViewModel) {
                 }
             }
 
-//            Spacer(Modifier.height(16.dp))
             var email by remember { mutableStateOf("") }
             var emailErrorText by remember { mutableStateOf("") }
             var emailContainsError by remember { mutableStateOf(false) }
@@ -198,22 +182,7 @@ fun loginScreen(vm: MainViewModel) {
 
             }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.already_signed_in))
-                Spacer(modifier = Modifier.padding(4.dp))
-                Text(
-                    stringResource(R.string.autorize),
-                    color = Color.Blue,
-                    modifier = Modifier.clickable {
-
-                    })
-            }
-
-
-            Spacer(Modifier.height(96.dp))
+            authorizeText()
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.hellocompose.ui.util
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -9,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -120,6 +120,24 @@ fun birthDateButton(
         )
         Text(text = birthDate, color = Color.Black, style = style)
     }
+}
+
+@Composable
+fun authorizeText() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(stringResource(R.string.already_signed_in))
+        Spacer(modifier = Modifier.padding(4.dp))
+        Text(
+            stringResource(R.string.autorize),
+            color = Color.Blue,
+            modifier = Modifier.clickable {
+
+            })
+    }
+    Spacer(Modifier.height(96.dp))
 }
 
 @Composable
