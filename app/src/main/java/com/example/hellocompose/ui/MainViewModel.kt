@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val loginUseCase: LoginUseCase,
-     val entryPointUseCase: EntryPointUseCase
+    val entryPointUseCase: EntryPointUseCase
 ) : ViewModel() {
     val state = MutableLiveData<String>()
     val entryPointLiveData = MutableLiveData<Event<NavigationState>>()
@@ -29,7 +29,35 @@ class MainViewModel(
 
     fun makeSuspendCall() {
         viewModelScope.launch {
-            loginUseCase.login("dfd").collect {
+//            loginUseCase.login("dfd").collect {
+//                when (it) {
+//                    is LoginScreen.NavigateToMainScreen -> {
+//                        state.postValue("fefe ${(0..100).random()}")
+//                    }
+//                    else -> {
+//
+//                    }
+//                }
+//            }
+
+        }
+    }
+
+    fun login(
+        name: String,
+        surname:String,
+        phone: String,
+        email: String,
+        dateOfBirth: String
+    ) {
+        viewModelScope.launch {
+            loginUseCase.login(
+                name,
+                surname = surname,
+                phone,
+                email,
+                dateOfBirth
+            ).collect {
                 when (it) {
                     is LoginScreen.NavigateToMainScreen -> {
                         state.postValue("fefe ${(0..100).random()}")

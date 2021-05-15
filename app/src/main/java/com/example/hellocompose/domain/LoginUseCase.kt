@@ -2,6 +2,7 @@ package com.example.hellocompose.domain
 
 
 import com.example.hellocompose.data.login.LoginRepo
+import com.example.hellocompose.data.login.model.UserAccount
 import com.example.hellocompose.ui.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -10,8 +11,21 @@ import kotlinx.coroutines.flow.flow
 class LoginUseCase(
     private val loginRepo: LoginRepo
 ) {
-    suspend fun login(model: String): Flow<LoginScreen<String>> = flow {
-        loginRepo.login(model).collect {
+    suspend fun login(
+        name: String,
+        surname:String,
+        phone: String,
+        email: String,
+        dateOfBirth: String
+    ): Flow<LoginScreen<String>> = flow {
+        val userAccount = UserAccount(
+            phoneNumber = phone,
+            firstName = name,
+            lastName = surname,
+            email = email,
+            birthday = dateOfBirth
+        )
+        loginRepo.login(userAccount).collect {
             when (it) {
                 is Result.Success -> {
                     /** navigate to MainFragment**/
