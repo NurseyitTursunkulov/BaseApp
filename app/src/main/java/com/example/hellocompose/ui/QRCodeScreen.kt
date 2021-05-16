@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hellocompose.R
 import com.example.hellocompose.ui.theme.itemsColor
-import org.koin.androidx.compose.getStateViewModel
+//import org.koin.androidx.compose.getStateViewModel
 import org.koin.androidx.compose.getViewModel
 
 @Composable

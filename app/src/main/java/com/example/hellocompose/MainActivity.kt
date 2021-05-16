@@ -1,12 +1,14 @@
 package com.example.hellocompose
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
@@ -24,14 +26,27 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalAnimatedInsets::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             changeStatusBarColor()
             HelloComposeTheme {
-                ProvideWindowInsets (windowInsetsAnimationsEnabled = true) {
+                ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     // A surface container using the 'background' color from the theme
                     Surface(color = MaterialTheme.colors.background) {
-                        Greeting(mainViewModel)
+//                        val loading: Boolean by mainViewModel.showLoading.observeAsState(false)
+//                        val showError: String by mainViewModel.showError.observeAsState("")
+                        val state = mainViewModel.entryPointLiveData.observeAsState()
+//                        Log.d("Nurs", "Nurs upper loading ${loading}")
+                        state.value?.getContentIfNotHandled()?.let {
+                            Greeting(
+                                navigationState = it,
+//                                loading = loading, showError = showError,
+//                                onLoginClicl = { a, b, c, d, e ->
+//                                    mainViewModel.login(a, b, c, d, e)
+//                                }
+                            mainViewModel
+                            )
+                        }
                     }
                 }
             }
@@ -41,15 +56,30 @@ class MainActivity : ComponentActivity() {
 
 @ExperimentalAnimatedInsets
 @Composable
-fun Greeting(exampleViewModel: MainViewModel = getViewModel()) {
-    var entryPointState = exampleViewModel.entryPointLiveData.observeAsState()
-    when (entryPointState.value?.getContentIfNotHandled()) {
+fun Greeting(
+    navigationState: NavigationState,
+//    loading: Boolean,
+//    showError: String,
+//    onLoginClicl: (
+//        name: String,
+//        surname: String,
+//        phone: String,
+//        email: String,
+//        dateOfBirth: String
+//    ) -> Unit,
+    exampleViewModel: MainViewModel = getViewModel()
+) {
+    when (navigationState) {
         is NavigationState.NavigateToMainScreen -> {
             MainScreen(exampleViewModel)
         }
         is NavigationState.NavigateToLoginScreen -> {
+//            Log.d("Nurs", "Nurs loading ${loading}")
+
             loginScreen(
-               exampleViewModel
+//                loading = loading,
+//                showError = showError,
+//                onLoginClicl = onLoginClicl
             )
         }
         is NavigationState.ShowLoading -> {

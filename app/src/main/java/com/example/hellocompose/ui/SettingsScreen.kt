@@ -23,11 +23,18 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun SettingsScreen(vm: MainViewModel ) {
 
-    val name: String by vm.state.observeAsState("")
-    Log.d("Nurs",name)
+    val loading: Boolean by vm.showMainScreen.observeAsState(false)
+
     Column(modifier = Modifier.padding(28.dp)) {
         Text(stringResource(R.string.settings_label), color = Color.Black, style = MaterialTheme.typography.h6)
         Spacer(Modifier.height(16.dp))
+        if(loading){
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(60.dp)
+
+            )
+        }
         var name by remember { mutableStateOf("") }
         Text(stringResource(R.string.name))
         OutlinedTextField(

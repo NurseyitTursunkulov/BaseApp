@@ -1,5 +1,6 @@
 package com.example.hellocompose.ui
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,9 +18,10 @@ class MainViewModel(
 ) : ViewModel() {
     val state = MutableLiveData<String>()
     val entryPointLiveData = MutableLiveData<Event<NavigationState>>()
-    val showMainScreen = MutableLiveData<Event<Boolean>>()
+    val showMainScreen = MutableLiveData<Boolean>()
 
     init {
+        Log.d("Nurs","Viewmodel init")
         viewModelScope.launch {
             entryPointUseCase.invoke().collect {
                 entryPointLiveData.postValue(Event(it))
@@ -29,6 +31,12 @@ class MainViewModel(
 
     fun makeSuspendCall() {
         viewModelScope.launch {
+            if(showMainScreen.value == false){
+                showMainScreen.postValue(true)
+            }else{
+                showMainScreen.postValue(false)
+            }
+
 //            loginUseCase.login("dfd").collect {
 //                when (it) {
 //                    is LoginScreen.NavigateToMainScreen -> {
@@ -43,6 +51,8 @@ class MainViewModel(
         }
     }
 
+    val showLoading = MutableLiveData<Boolean>()
+    val showError = MutableLiveData<String>()
     fun login(
         name: String,
         surname:String,
@@ -61,9 +71,16 @@ class MainViewModel(
                 when (it) {
                     is LoginScreen.NavigateToMainScreen -> {
                         state.postValue("fefe ${(0..100).random()}")
+                        showLoading.postValue(false)
+                        entryPointLiveData.postValue(Event(NavigationState.NavigateToMainScreen))
                     }
-                    else -> {
-
+                    is LoginScreen.Loading ->{
+                        Log.d("Nurs","loading true")
+                        showLoading.postValue(true)
+                    }
+                    is LoginScreen.Error ->{
+                        showLoading.postValue(false)
+                        showError.postValue(it.exception.localizedMessage)
                     }
                 }
             }

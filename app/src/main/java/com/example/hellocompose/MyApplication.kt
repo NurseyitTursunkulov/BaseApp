@@ -34,8 +34,8 @@ class MyApplication : Application() {
             )
         }
         single<LoginRepo> {
-            LoginRepoImpl(
-                apiService = get()
+            LoginMock(
+//                apiService = get()
             )
         }
     }

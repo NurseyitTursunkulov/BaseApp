@@ -11,7 +11,7 @@ class LoginMock : LoginRepo {
     override suspend fun isUserLoggedIn(): Flow<Result<Boolean>> = flow {
         emit(Result.Loading)
         delay(100)
-        emit(Result.Success(true))
+        emit(Result.Success(false))
     }
 
     override suspend fun login(model: UserAccount): Flow<Result<String>> = flow {

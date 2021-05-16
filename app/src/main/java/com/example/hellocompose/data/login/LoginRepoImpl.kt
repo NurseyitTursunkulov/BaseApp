@@ -27,6 +27,7 @@ class LoginRepoImpl(
     }
 
     override suspend fun login(userAccount: UserAccount): Flow<Result<String>> = flow {
+        emit(Result.Loading)
         try {
 //            emit(Result.Success("TokenResponse"))
             val freeCardResponse = apiService.getCardFree()
@@ -45,17 +46,6 @@ class LoginRepoImpl(
                     emit(Result.Error(Exception("Пользователь не найден")))
                 }
             }
-            val userAccount2 = UserAccount(
-                "996557491567",
-                "Nurseyit",
-                "Tursunkulov",
-                "df",
-                "nurs@mail.com",
-                "2021-05-14",
-                1,
-                0,
-                cardList
-            )
             userAccount.cards = cardList
             val response = apiService.login(userAccount)
             when {
