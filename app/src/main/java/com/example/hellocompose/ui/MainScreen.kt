@@ -6,10 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.koin.androidx.compose.getViewModel
 
 
 @Composable
-fun MainScreen(exampleViewModel: MainViewModel) {
+fun MainScreen(
+    removeDecorFitsSystemWindows: () -> Unit = {}
+) {
+    removeDecorFitsSystemWindows()
+    val vm = getViewModel<MainViewModel>()
     val items = listOf(
         Screen.Profile,
         Screen.QrCode,
@@ -25,10 +30,10 @@ fun MainScreen(exampleViewModel: MainViewModel) {
         NavHost(navController, startDestination = Screen.Profile.route) {
             composable(Screen.Profile.route) {
 //                exampleViewModel.makeSuspendCall()
-                SettingsScreen(exampleViewModel)
+                SettingsScreen(vm)
             }
             composable(Screen.QrCode.route) {
-                QRCodeScreen(exampleViewModel)
+                QRCodeScreen(vm)
             }
             composable(Screen.Main.route) {
                 Text("ooo")

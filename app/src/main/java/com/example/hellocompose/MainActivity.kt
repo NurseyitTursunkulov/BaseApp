@@ -44,7 +44,19 @@ class MainActivity : ComponentActivity() {
 //                                onLoginClicl = { a, b, c, d, e ->
 //                                    mainViewModel.login(a, b, c, d, e)
 //                                }
-                            mainViewModel
+//                            mainViewModel
+                                setDecorFitsSystemWindows = {
+                                    WindowCompat.setDecorFitsSystemWindows(
+                                        window,
+                                        false
+                                    )
+                                },
+                                removeDecorFitsSystemWindows = {
+                                    WindowCompat.setDecorFitsSystemWindows(
+                                        window,
+                                        true
+                                    )
+                                }
                             )
                         }
                     }
@@ -58,6 +70,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(
     navigationState: NavigationState,
+    setDecorFitsSystemWindows: () -> Unit = {},
+    removeDecorFitsSystemWindows: () -> Unit = {}
 //    loading: Boolean,
 //    showError: String,
 //    onLoginClicl: (
@@ -67,16 +81,17 @@ fun Greeting(
 //        email: String,
 //        dateOfBirth: String
 //    ) -> Unit,
-    exampleViewModel: MainViewModel = getViewModel()
+//    exampleViewModel: MainViewModel = getViewModel()
 ) {
     when (navigationState) {
         is NavigationState.NavigateToMainScreen -> {
-            MainScreen(exampleViewModel)
+            MainScreen(removeDecorFitsSystemWindows)
         }
         is NavigationState.NavigateToLoginScreen -> {
 //            Log.d("Nurs", "Nurs loading ${loading}")
 
             loginScreen(
+                setDecorFitsSystemWindows
 //                loading = loading,
 //                showError = showError,
 //                onLoginClicl = onLoginClicl

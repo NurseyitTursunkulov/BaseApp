@@ -131,6 +131,7 @@ fun birthDateButton(
 
 @Composable
 fun authorizeText() {
+//    Spacer(Modifier.height(16.dp))
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
