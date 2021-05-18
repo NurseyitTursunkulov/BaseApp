@@ -2,12 +2,14 @@ package com.example.hellocompose.data.login
 
 
 import android.util.Log
+import com.example.hellocompose.data.login.model.CardPrint
 import com.example.hellocompose.data.login.model.UserAccount
 import com.example.hellocompose.data.login.model.Cards
 import com.example.hellocompose.data.util.UserIsAlreadyRegistered
 import com.example.hellocompose.ui.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import retrofit2.Response
 
 class LoginRepoImpl(
     private val apiService: ApiService,
@@ -26,48 +28,68 @@ class LoginRepoImpl(
         emit(Result.Success(false))
     }
 
-    override suspend fun login(userAccount: UserAccount): Flow<Result<String>> = flow {
+    override suspend fun signIn(userAccount: UserAccount): Flow<Result<String>> = flow {
         emit(Result.Loading)
         try {
-//            emit(Result.Success("TokenResponse"))
-            val freeCardResponse = apiService.getCardFree()
             val cardList = mutableListOf<Cards>()
-            when {
-                freeCardResponse.isSuccessful -> {
-                    freeCardResponse.body()?.let { cards ->
-                        val card = cards.first()
-                        cardList.add(Cards(card.id,1))
-//                        localDataSource.saveToken(model, token)
-                    } ?: kotlin.run {
-                        emit(Result.Error(Exception("Проблеммы с подключение интернета")))
+            apiService.getCardFree().ifSuccess {cards->
+                val card = cards.first()
+                cardList.add(Cards(card.id, 1))
+            }
+            if (cardList.isEmpty()) {
+                apiService.getLastCardNumber().ifSuccess { lastCardNumber ->
+                    apiService.generateCards(
+                        CardPrint(
+                            lastCardNumber + 1,
+                            lastCardNumber + 10
+                        )
+                    ).ifSuccess {
+                        val card = it.first()
+                        cardList.add(Cards(card.id, 1))
                     }
                 }
-                else -> {
-                    emit(Result.Error(Exception("Пользователь не найден")))
-                }
             }
+
             userAccount.cards = cardList
-            val response = apiService.login(userAccount)
+
+            val response = apiService.registerAccount(userAccount)
             when {
                 response.isSuccessful -> {
                     response.body()?.let { token ->
                         emit(Result.Success(token))
-                        Log.d("Nurs","success")
 //                        localDataSource.saveToken(model, token)
                     } ?: kotlin.run {
-                        Log.d("Nurs","error")
+                        Log.d("Nurs", "error")
                         emit(Result.Error(Exception("Проблеммы с подключение интернета")))
                     }
                 }
                 else -> {
-                    Log.d("Nurs","rtad ${response.errorBody()}")
+                    Log.d("Nurs", "rtad ${response.errorBody()}")
                     emit(Result.Error(UserIsAlreadyRegistered())) //todo change it later
-//                    emit(Result.Error(Exception("Пользователь уже зарегистрирован")))
                 }
             }
+
         } catch (e: Exception) {
-            Log.d("Nurs","adfacce ${e.localizedMessage}")
+            Log.d("Nurs", "adfacce ${e.localizedMessage}")
             emit(Result.Error(Exception(e.localizedMessage)))
+        }
+    }
+}
+
+
+fun <T> Response<T>.ifSuccess(onSuccess: suspend (T) -> Unit): Flow<Result<T>> {
+    return flow {
+        when {
+            isSuccessful -> {
+                body()?.let { cards ->
+                    onSuccess(cards)
+                } ?: kotlin.run {
+                    emit(Result.Error(Exception("Проблеммы с подключение интернета")))
+                }
+            }
+            else -> {
+                emit(Result.Error(Exception("Пользователь не найден")))
+            }
         }
     }
 }

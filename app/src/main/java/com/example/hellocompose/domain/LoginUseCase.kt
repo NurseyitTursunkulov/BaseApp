@@ -25,7 +25,7 @@ class LoginUseCase(
             email = email,
             birthday = dateOfBirth
         )
-        loginRepo.login(userAccount).collect {
+        loginRepo.signIn(userAccount).collect {
             when (it) {
                 is Result.Success -> {
                     /** navigate to MainFragment**/

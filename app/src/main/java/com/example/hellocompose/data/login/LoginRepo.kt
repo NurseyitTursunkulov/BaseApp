@@ -6,5 +6,5 @@ import com.example.hellocompose.ui.util.Result
 
 interface LoginRepo {
     suspend fun isUserLoggedIn():Flow<Result<Boolean>>
-    suspend fun login(model: UserAccount):Flow<Result<String>>
+    suspend fun signIn(userAccount: UserAccount):Flow<Result<String>>
 }
