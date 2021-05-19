@@ -87,4 +87,10 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-insets:0.9.1")
     implementation ("io.github.vanpra.compose-material-dialogs:datetime:0.4.0")
 
+    testImplementation ("io.mockk:mockk:1.10.6")
+    androidTestImplementation ("io.mockk:mockk:1.10.6")
+    testImplementation ("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:3.2.0")
+
 }

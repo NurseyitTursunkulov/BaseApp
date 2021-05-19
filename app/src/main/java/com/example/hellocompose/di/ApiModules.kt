@@ -1,15 +1,12 @@
 package com.example.hellocompose.di
 
-import android.os.UserManager
-import com.example.hellocompose.data.login.ApiService
+import com.example.hellocompose.data.login.remoteDS.ApiService
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.timelysoft.shelter.android.util.network.NetworkResponseAdapterFactory
 import okhttp3.*
-import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
-import org.koin.java.KoinJavaComponent.get
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
