@@ -2,6 +2,7 @@ package com.example.hellocompose.data.login
 
 
 import android.util.Log
+import com.example.hellocompose.data.login.localDataSource.LocalDataSource
 import com.example.hellocompose.data.login.model.Card
 import com.example.hellocompose.data.login.model.CardPrint
 import com.example.hellocompose.data.login.model.UserAccount
@@ -11,23 +12,25 @@ import com.example.hellocompose.data.util.ExceptionInResponseBody
 import com.example.hellocompose.ui.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 class LoginRepoImpl(
     private val remoteDS: RemoteDS,
-//    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource
 ) : LoginRepo {
 
     override suspend fun isUserLoggedIn(): Flow<Result<Boolean>> = flow {
-//        emit(Result.Loading)
-//        if (localDataSource.isUserSavedToLocalStorage()){
-//            emit(Result.Success(true))
-//        }else{
-//            emit(Result.Success(false))
-//        }
         emit(Result.Loading)
-//        delay(3000)
         emit(Result.Success(false))
+//        localDataSource.isUserSavedToLocalStorage().collect {
+//            if (it.userId.isEmpty()){
+//                emit(Result.Success(false))
+//            }
+//            else{
+//                emit(Result.Success(true))
+//            }
+//        }
     }
 
     /**
@@ -82,6 +85,14 @@ class LoginRepoImpl(
             if (cardList.isNotEmpty()) {
                 userAccount.cards = cardList
                 val response = remoteDS.registerAccount(userAccount)
+                when(response){
+                    is Result.Success ->{
+                        userAccount.userId = response.data
+                        localDataSource.saveUser(userAccount)
+                    }
+                    else->{}
+                }
+
                 emit(response)
             }
         } catch (e: Exception) {

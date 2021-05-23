@@ -11,7 +11,8 @@ data class UserAccount(
     @SerializedName("birthday") var      birthday               : String,
     @SerializedName("regChannel") var    regChannel             : Int= 1,
     @SerializedName("sex") var           sex                : Int =1,
-    @SerializedName("cards") var         cards              : List<Cards> = emptyList()
+    @SerializedName("cards") var         cards              : List<Cards> = emptyList(),
+    var userId :String = ""
 )
 
 data class Cards(

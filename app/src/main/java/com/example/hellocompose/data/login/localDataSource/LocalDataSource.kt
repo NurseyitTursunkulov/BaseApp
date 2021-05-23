@@ -1,9 +1,10 @@
 package com.example.hellocompose.data.login.localDataSource
 
+import com.example.hellocompose.data.login.model.UserAccount
+import kotlinx.coroutines.flow.Flow
+
 
 interface LocalDataSource {
-    suspend fun saveToken(model: String, token: String)
-    suspend fun isUserSavedToLocalStorage(): Boolean
-    suspend fun saveHotelIdent(ident:String)
-    suspend fun getHotelIdent():String
+    suspend fun isUserSavedToLocalStorage(): Flow<UserAccount>
+    suspend fun saveUser (model: UserAccount)
 }

@@ -160,6 +160,7 @@ fun loginScreen(
 
                     val context = LocalContext.current.resources
                     registerButton(modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
+//                        vm.datasourceTest()
                         if (email.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
                                 .matches()
                         ) {
