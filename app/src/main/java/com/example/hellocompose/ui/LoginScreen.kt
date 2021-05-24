@@ -114,7 +114,8 @@ fun loginScreen(
                         textHeader = stringResource(R.string.telefon)
                     ) {
                         phoneNumber = it
-                        if (phoneNumber.isNotEmpty()) {
+                        val pattern = "^[1-9][0-9]{9,14}$".toRegex()
+                        if ( pattern.matches(phoneNumber)) {
                             phoneNumberErrorText = ""
                             phoneNumberContainsError = false
                         }
@@ -186,8 +187,8 @@ fun loginScreen(
                             surNameContainsError = false
                             surNameErrorText = ""
                         }
-
-                        if (phoneNumber.isEmpty()) {
+                        val pattern = "^[1-9][0-9]{9,14}$".toRegex()
+                        if (phoneNumber.isEmpty() || !pattern.matches(phoneNumber)) {
                             phoneNumberContainsError = true
                             phoneNumberErrorText =
                                 context.getString(R.string.this_field_is_required)
