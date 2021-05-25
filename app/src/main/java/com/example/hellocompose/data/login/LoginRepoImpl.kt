@@ -83,14 +83,15 @@ class LoginRepoImpl(
                 }
             }
             if (cardList.isNotEmpty()) {
-                userAccount.cards = cardList
                 val response = remoteDS.registerAccount(userAccount)
-                when(response){
-                    is Result.Success ->{
+                when (response) {
+                    is Result.Success -> {
                         userAccount.userId = response.data
                         localDataSource.saveUser(userAccount)
+                        remoteDS.sendSmsCode(userAccount.phoneNumber)
                     }
-                    else->{}
+                    else -> {
+                    }
                 }
 
                 emit(response)
@@ -98,6 +99,25 @@ class LoginRepoImpl(
         } catch (e: Exception) {
             Log.d("Nurs", "adfacce ${e.localizedMessage}")
             emit(Result.Error(Exception(e.localizedMessage)))
+        }
+    }
+
+    override suspend fun getToken(smsCode: String): Flow<Result<Unit>> {
+        val phoneNumber = localDataSource.getPhoneNumber()
+        return flow {
+            val response = remoteDS.getToken(phoneNumber, smsCode)
+            when (response) {
+                is Result.Success -> {
+                    localDataSource.saveToken(response.data)
+                    emit(Result.Success(Unit))
+                }
+                is Result.Error -> {
+                    emit(Result.Error(response.exception))
+                }
+                Result.Loading -> {
+                    emit(Result.Loading)
+                }
+            }
         }
     }
 

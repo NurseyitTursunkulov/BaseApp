@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "com.example.hellocompose.data.login.localDataSource";
+option java_multiple_files = true;
+
+message ProtoToken{
+  string refreshToken = 1;
+  string accessToken = 2;
+}

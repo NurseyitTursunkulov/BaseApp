@@ -5,12 +5,9 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hellocompose.data.login.model.UserAccount
-import com.example.hellocompose.domain.EntryPointUseCase
-import com.example.hellocompose.domain.LoginScreen
-import com.example.hellocompose.domain.LoginUseCase
-import com.example.hellocompose.domain.NavigationState
+import com.example.hellocompose.domain.*
 import com.example.hellocompose.ui.util.Event
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -19,21 +16,23 @@ import kotlinx.coroutines.withContext
 class MainViewModel(
     private val loginUseCase: LoginUseCase,
     val entryPointUseCase: EntryPointUseCase,
-    val local : LocalDataSourceImpl
+    val local: LocalDataSourceImpl,
+    val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
     val state = MutableLiveData<String>()
     val entryPointLiveData = MutableLiveData<Event<NavigationState>>()
     val showMainScreen = MutableLiveData<Boolean>()
+    val showAuthScreen = MutableLiveData<Event<Boolean>>()
 
     init {
-        Log.d("Nurs","Viewmodel init")
+        Log.d("Nurs", "Viewmodel init")
         viewModelScope.launch {
             entryPointUseCase.invoke().collect {
                 entryPointLiveData.postValue(Event(it))
             }
         }
         viewModelScope.launch {
-            withContext(Dispatchers.IO){
+            withContext(dispatcher) {
                 local.isUserSavedToLocalStorage().collect {
                     Log.d("Nurs", "flow from datastore ${it}")
                 }
@@ -43,9 +42,9 @@ class MainViewModel(
 
     fun makeSuspendCall() {
         viewModelScope.launch {
-            if(showMainScreen.value == false){
+            if (showMainScreen.value == false) {
                 showMainScreen.postValue(true)
-            }else{
+            } else {
                 showMainScreen.postValue(false)
             }
 
@@ -53,16 +52,16 @@ class MainViewModel(
     }
 
     val showLoading = MutableLiveData<Boolean>()
-    val showError = MutableLiveData<String>()
+    val showError = MutableLiveData<Pair<Boolean,String>>()
     fun login(
         name: String,
-        surname:String,
+        surname: String,
         phone: String,
         email: String,
         dateOfBirth: String
     ) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher) {
                 loginUseCase.login(
                     name,
                     surname = surname,
@@ -71,18 +70,40 @@ class MainViewModel(
                     dateOfBirth
                 ).collect {
                     when (it) {
-                        is LoginScreen.NavigateToMainScreen -> {
-                            state.postValue("fefe ${(0..100).random()}")
-                            showLoading.postValue(false)
-                            entryPointLiveData.postValue(Event(NavigationState.NavigateToMainScreen))
-                        }
                         is LoginScreen.Loading -> {
                             Log.d("Nurs", "loading true")
                             showLoading.postValue(true)
                         }
                         is LoginScreen.Error -> {
                             showLoading.postValue(false)
-                            showError.postValue(it.exception.localizedMessage)
+                            showError.postValue(Pair(true,it.exception.localizedMessage?:"error"))
+                        }
+                        is LoginScreen.NavigateToVerifyPhoneNumber -> {
+                            showLoading.postValue(false)
+                            entryPointLiveData.postValue(Event(NavigationState.NavigateToVerifyBySmsScreen))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun getToken(smsCode: String) {
+        viewModelScope.launch {
+            withContext(dispatcher){
+                loginUseCase.getToken(smsCode).collect{
+                    when (it) {
+                        is VerifyPhoneNumberScreen.ShowLoading -> {
+                            Log.d("Nurs", "loading true")
+                            showLoading.postValue(true)
+                        }
+                        is VerifyPhoneNumberScreen.ShowError -> {
+                            showLoading.postValue(false)
+                            showError.postValue(Pair(true,it.exception.localizedMessage?:"error"))
+                        }
+                        is VerifyPhoneNumberScreen.NavigateToMainScreen -> {
+                            showLoading.postValue(false)
+                            entryPointLiveData.postValue(Event(NavigationState.NavigateToMainScreen))
                         }
                     }
                 }

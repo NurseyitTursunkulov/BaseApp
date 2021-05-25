@@ -30,4 +30,5 @@ sealed class NavigationState {
     object ShowLoading : NavigationState()
     object NavigateToMainScreen : NavigationState()
     object NavigateToLoginScreen : NavigationState()
+    object NavigateToVerifyBySmsScreen : NavigationState()
 }

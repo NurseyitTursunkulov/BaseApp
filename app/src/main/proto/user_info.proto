@@ -21,6 +21,7 @@ message ProtoUser {
 
   //  Filter filter = 2;
 }
+
 message ProtoCards{
   int32 cardId = 1;
   int32 cardType = 2;

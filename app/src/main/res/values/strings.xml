@@ -17,4 +17,6 @@
     <string name="register">зарегистрироваться</string>
     <string name="authorization">Авторизация</string>
     <string name="registration">Регистрация</string>
+    <string name="when_sms_did_not_come">Если не пришло СМС</string>
+    <string name="send_new_code">Отправить новый код</string>
 </resources>

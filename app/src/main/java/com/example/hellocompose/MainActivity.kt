@@ -103,6 +103,10 @@ fun Greeting(
         is NavigationState.ShowError -> {
             Text("ShowError")
         }
+        is NavigationState.NavigateToVerifyBySmsScreen ->{
+            authScreen() {
+            }
+        }
     }
 
 

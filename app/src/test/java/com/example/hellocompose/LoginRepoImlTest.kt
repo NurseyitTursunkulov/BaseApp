@@ -153,6 +153,7 @@ class LoginRepoImlTest {
             } returns flowOf(data)
             coEvery { localDS.saveUser(data) } returns Unit
             coEvery { remoteDs.getCardFree() } returns Result.Success(data1)
+            coEvery { remoteDs.sendSmsCode("") } returns Result.Success(Unit)
             coEvery { remoteDs.getLastCardNumber() } returns Result.Success(1)
             coEvery { remoteDs.registerAccount(data) } returns Result.Success("")
             coEvery { remoteDs.generateCards(cardPrint) } returns Result.Success(
@@ -179,6 +180,7 @@ class LoginRepoImlTest {
                 remoteDs.generateCards(cardPrint)
                 remoteDs.registerAccount(data)
                 localDS.saveUser(data)
+                remoteDs.sendSmsCode("")
             }
         }
     }
@@ -192,6 +194,7 @@ class LoginRepoImlTest {
                 localDS.isUserSavedToLocalStorage()
             } returns flowOf(data)
             coEvery { localDS.saveUser(data) } returns Unit
+            coEvery { remoteDs.sendSmsCode("") } returns Result.Success(Unit)
             coEvery { remoteDs.getCardFree() } returns Result.Success(listOf(StabData.card))
             coEvery { remoteDs.registerAccount(data) } returns Result.Success("jjj")
 

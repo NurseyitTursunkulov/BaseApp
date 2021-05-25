@@ -46,9 +46,8 @@ fun loginScreen(
 
     val vm = getViewModel<MainViewModel>()
     val loading: Boolean by vm.showLoading.observeAsState(false)
-    val showError: String by vm.showError.observeAsState("")
-    val name: String by vm.state.observeAsState("")
-    Log.d("Nurs", name)
+    val showError: Pair<Boolean,String> by vm.showError.observeAsState(initial =  Pair(false,""))
+
     ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
         Box() {
             Surface(
@@ -205,11 +204,11 @@ fun loginScreen(
                         }
 
                         if (!(birthDate.isEmpty()
-                                    && phoneNumber.isEmpty()
                                     && surName.isEmpty()
                                     && name.isEmpty()
                                     ) && android.util.Patterns.EMAIL_ADDRESS.matcher(email)
                                 .matches()
+                            && pattern.matches(phoneNumber)
                         ) {
                             vm.login(
                                 name,
@@ -247,19 +246,21 @@ fun loginScreen(
                         .align(Alignment.Center)
                 )
             }
-            if (showError.isNotEmpty()) {
+            if (showError.first) {
                 Snackbar(
                     modifier = Modifier
                         .padding(4.dp, bottom = 50.dp)
                         .align(Alignment.BottomCenter),
                     actionOnNewLine = true,
                     action = {
-                        TextButton(onClick = {}) {
+                        TextButton(onClick = {
+                            vm.showError.postValue(Pair(false,""))
+                        }) {
                             Text(text = "Remove")
                         }
                     }
                 ) {
-                    Text(text = showError)
+                    Text(text = showError.second)
                 }
             }
         }

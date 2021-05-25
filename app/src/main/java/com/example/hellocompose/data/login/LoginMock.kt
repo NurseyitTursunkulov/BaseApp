@@ -20,4 +20,10 @@ class LoginMock : LoginRepo {
         emit(Result.Success("4"))
     }
 
+    override suspend fun getToken(smsCode: String): Flow<Result<Unit>> {
+        return flow {
+
+        }
+    }
+
 }

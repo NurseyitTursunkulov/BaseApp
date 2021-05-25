@@ -2,8 +2,8 @@ package com.example.hellocompose.data.util
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import com.codelab.android.datastore.UserPreferences
 import com.example.hellocompose.data.login.localDataSource.ProtoCards
+import com.example.hellocompose.data.login.localDataSource.ProtoToken
 import com.example.hellocompose.data.login.localDataSource.ProtoUser
 import com.example.hellocompose.data.login.model.Cards
 import com.example.hellocompose.data.login.model.UserAccount
@@ -49,18 +49,18 @@ fun ProtoCards.convertToCard():Cards{
     )
 }
 
-object ProtoUserSerializer : Serializer<ProtoUser> {
-    override val defaultValue: ProtoUser = ProtoUser.getDefaultInstance()
+object ProtoTokenSerializer : Serializer<ProtoToken> {
+    override val defaultValue: ProtoToken = ProtoToken.getDefaultInstance()
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    override suspend fun readFrom(input: InputStream): ProtoUser {
+    override suspend fun readFrom(input: InputStream): ProtoToken {
         try {
-            return ProtoUser.parseFrom(input)
+            return ProtoToken.parseFrom(input)
         } catch (exception: InvalidProtocolBufferException) {
             throw CorruptionException("Cannot read proto.", exception)
         }
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    override suspend fun writeTo(t: ProtoUser, output: OutputStream) = t.writeTo(output)
+    override suspend fun writeTo(t: ProtoToken, output: OutputStream) = t.writeTo(output)
 }

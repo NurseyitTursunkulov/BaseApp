@@ -28,8 +28,7 @@ class LoginUseCase(
         loginRepo.signIn(userAccount).collect {
             when (it) {
                 is Result.Success -> {
-                    /** navigate to MainFragment**/
-                    emit(LoginScreen.NavigateToMainScreen(it.data.toString()))
+                    emit(LoginScreen.NavigateToVerifyPhoneNumber(phone))
                 }
                 /** show loading**/
                 is Result.Loading -> emit(LoginScreen.Loading)
@@ -38,10 +37,17 @@ class LoginUseCase(
             }
         }
     }
+
+    suspend fun getToken(smsCode: String) : Flow<VerifyPhoneNumberScreen<Unit>> = flow {
+        loginRepo.getToken(smsCode).collect {
+            when (it) {
+                is Result.Success -> {
+                    emit(VerifyPhoneNumberScreen.NavigateToMainScreen(Unit))
+                }
+                is Result.Loading -> emit(VerifyPhoneNumberScreen.ShowLoading)
+                is Result.Error -> emit(VerifyPhoneNumberScreen.ShowError(it.exception))
+            }
+        }
+    }
 }
 
-sealed class LoginScreen<out R> {
-    data class NavigateToMainScreen<out R>(val data: R) : LoginScreen<R>()
-    data class Error(val exception: Exception) : LoginScreen<Nothing>()
-    object Loading : LoginScreen<Nothing>()
-}
