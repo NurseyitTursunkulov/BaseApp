@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.hellocompose.R
 import com.example.hellocompose.ui.theme.*
 import com.example.hellocompose.ui.theme.itemsColor3
@@ -26,17 +28,19 @@ import com.example.hellocompose.ui.util.MyOutlinedTextField
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
-import org.koin.androidx.compose.getViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @ExperimentalAnimatedInsets
 @Composable
 fun authScreen(
     phone: String = "",
     onNumberSendClicked: (telefonNumber: String) -> Unit,
+    vm :MainViewModel
 ) {
-    val vm = getViewModel<MainViewModel>()
+//    val vm = getViewModel<MainViewModel>()
     val loading = vm.showLoading.observeAsState(false)
-    val showError: Pair<Boolean,String> by vm.showError.observeAsState(initial =  Pair(false,""))
+    val showError: Pair<Boolean, String> by vm.showError.observeAsState(initial = Pair(false, ""))
 
 
     ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
@@ -45,7 +49,7 @@ fun authScreen(
 //                color = Color.Black.copy(alpha = 0.1f),
                 modifier = Modifier.fillMaxSize()
             ) {}
-            if (loading.value!=true) {
+            if (loading.value != true) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -54,18 +58,45 @@ fun authScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.padding(16.dp))
-                    Text(stringResource(R.string.authorization), style = MaterialTheme.typography.h6)
+                    Text(
+                        stringResource(R.string.authorization),
+                        style = MaterialTheme.typography.h6
+                    )
                     Spacer(modifier = Modifier.padding(16.dp))
                     Image(
                         painter = painterResource(id = R.drawable.ic_group_5),
                         contentDescription = "null" // decorative element
                     )
                     Spacer(modifier = Modifier.padding(16.dp))
+//                    ConstraintLayout {
+//                        // Create references for the composables to constrain
+//                        val (button, text) = createRefs()
+//
+//                        Button(
+//                            onClick = { /* Do something */ },
+//                            // Assign reference "button" to the Button composable
+//                            // and constrain it to the top of the ConstraintLayout
+//                            modifier = Modifier.constrainAs(button) {
+//                                start.linkTo(parent.start, margin = 16.dp)
+//                            }
+//                        ) {
+//                            Text("Button")
+//                        }
+//
+//                        // Assign reference "text" to the Text composable
+//                        // and constrain it to the bottom of the Button composable
+//                        Text("Text", Modifier.constrainAs(text) {
+//                            end.linkTo(button.end, margin = 16.dp)
+//                        })
+//                    }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(stringResource(R.string.when_sms_did_not_come))
+
+                        val text: String by vm.sec.observeAsState("df")
+
+                        Text(text,color = Color.Black.copy(alpha = 0.6f),modifier = Modifier.padding(start = 8.dp) )
                         val horizontalGradient = Brush.horizontalGradient(
                             colors = listOf(
                                 buttonGradientStart,
@@ -81,10 +112,11 @@ fun authScreen(
                             style = typography.body2.copy(color = Color.White),
                             modifier = Modifier
 //                        .padding(12.dp)
+                                .padding(end= 12.dp)
                                 .clickable(onClick = {})
                                 .clip(RoundedCornerShape(4.dp))
                                 .background(brush = horizontalGradient)
-                                .padding(12.dp)
+
                         )
                     }
                     Spacer(modifier = Modifier.padding(8.dp))
@@ -142,7 +174,7 @@ fun authScreen(
                     actionOnNewLine = true,
                     action = {
                         TextButton(onClick = {
-                            vm.showError.postValue(Pair(false,""))
+                            vm.showError.postValue(Pair(false, ""))
                         }) {
                             Text(text = "Remove")
                         }
@@ -160,7 +192,7 @@ fun authScreen(
 @Composable
 fun DefaultPreview() {
     HelloComposeTheme {
-        authScreen(""){}
+//        authScreen("") {}
     }
 }
 

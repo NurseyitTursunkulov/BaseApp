@@ -24,7 +24,6 @@ import com.example.hellocompose.ui.theme.HelloComposeTheme
 import com.example.hellocompose.ui.util.*
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.ProvideWindowInsets
-import org.koin.androidx.compose.getViewModel
 
 
 @OptIn(ExperimentalAnimatedInsets::class)
@@ -39,12 +38,13 @@ fun loginScreen(
 //        email: String,
 //        dateOfBirth: String
 //    ) -> Unit
+    vm :MainViewModel,
 
     setDecorFitsSystemWindows:()->Unit = {}
 ) {
     setDecorFitsSystemWindows()
 
-    val vm = getViewModel<MainViewModel>()
+//    val vm = getViewModel<MainViewModel>()
     val loading: Boolean by vm.showLoading.observeAsState(false)
     val showError: Pair<Boolean,String> by vm.showError.observeAsState(initial =  Pair(false,""))
 

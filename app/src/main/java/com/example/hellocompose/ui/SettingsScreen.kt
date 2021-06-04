@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hellocompose.R
 import com.example.hellocompose.ui.theme.itemsColor
-import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun SettingsScreen(vm: MainViewModel ) {

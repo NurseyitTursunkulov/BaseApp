@@ -17,7 +17,6 @@ import com.example.hellocompose.ui.*
 import com.example.hellocompose.ui.theme.HelloComposeTheme
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.ProvideWindowInsets
-import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -56,8 +55,10 @@ class MainActivity : ComponentActivity() {
                                         window,
                                         true
                                     )
-                                }
+                                },
+                                vm = mainViewModel
                             )
+
                         }
                     }
                 }
@@ -71,7 +72,8 @@ class MainActivity : ComponentActivity() {
 fun Greeting(
     navigationState: NavigationState,
     setDecorFitsSystemWindows: () -> Unit = {},
-    removeDecorFitsSystemWindows: () -> Unit = {}
+    removeDecorFitsSystemWindows: () -> Unit = {},
+    vm :MainViewModel
 //    loading: Boolean,
 //    showError: String,
 //    onLoginClicl: (
@@ -85,12 +87,12 @@ fun Greeting(
 ) {
     when (navigationState) {
         is NavigationState.NavigateToMainScreen -> {
-            MainScreen(removeDecorFitsSystemWindows)
+            MainScreen(removeDecorFitsSystemWindows,vm)
         }
         is NavigationState.NavigateToLoginScreen -> {
 //            Log.d("Nurs", "Nurs loading ${loading}")
 
-            loginScreen(
+            loginScreen(vm,
                 setDecorFitsSystemWindows
 //                loading = loading,
 //                showError = showError,
@@ -104,8 +106,8 @@ fun Greeting(
             Text("ShowError")
         }
         is NavigationState.NavigateToVerifyBySmsScreen ->{
-            authScreen() {
-            }
+            authScreen(vm = vm,onNumberSendClicked =  {
+            })
         }
     }
 

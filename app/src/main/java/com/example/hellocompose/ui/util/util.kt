@@ -15,9 +15,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigate
 import com.example.hellocompose.ui.theme.bottomNavBackColor
 import com.example.hellocompose.ui.theme.itemsColor
 import com.example.hellocompose.ui.theme.selectedItemBackColor
@@ -49,7 +47,7 @@ fun createBottomNavBar(
 ) {
     BottomNavigation(backgroundColor = bottomNavBackColor) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+        val currentRoute = navBackStackEntry?.destination?.route
         items.forEach { screen ->
             val bottomNavigationItemModifier = if (currentRoute == screen.route) {
                 Modifier.background(selectedItemBackColor)
@@ -70,10 +68,17 @@ fun createBottomNavBar(
                         // Pop up to the start destination of the graph to
                         // avoid building up a large stack of destinations
                         // on the back stack as users select items
-                        popUpTo = navController.graph.startDestination
-                        // Avoid multiple copies of the same destination when
-                        // reselecting the same item
-                        launchSingleTop = true
+                        navController.graph.startDestinationRoute?.let {
+                            popUpTo(it) {
+                                saveState = true
+                            }
+                            // Avoid multiple copies of the same destination when
+                            // reselecting the same item
+                            launchSingleTop = true
+                            // Restore state when reselecting a previously selected item
+                            restoreState = true
+                        }
+
                     }
                 }
             )

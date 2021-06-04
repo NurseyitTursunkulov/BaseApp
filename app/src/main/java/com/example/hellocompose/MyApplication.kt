@@ -16,6 +16,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.logger.Level
 import org.koin.dsl.module
 
 class MyApplication : Application() {
@@ -23,7 +24,7 @@ class MyApplication : Application() {
         super.onCreate()
         // Start Koin
         startKoin {
-            androidLogger()
+            androidLogger(Level.NONE)
             androidContext(this@MyApplication)
             modules(appModule,apiModules)
         }

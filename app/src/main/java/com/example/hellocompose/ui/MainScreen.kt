@@ -6,15 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.koin.androidx.compose.getViewModel
 
 
 @Composable
 fun MainScreen(
-    removeDecorFitsSystemWindows: () -> Unit = {}
+    removeDecorFitsSystemWindows: () -> Unit = {},
+    vm :MainViewModel
 ) {
     removeDecorFitsSystemWindows()
-    val vm = getViewModel<MainViewModel>()
+//    val vm = getViewModel<MainViewModel>()
     val items = listOf(
         Screen.Profile,
         Screen.QrCode,
