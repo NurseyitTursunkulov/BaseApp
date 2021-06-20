@@ -9,6 +9,7 @@ import com.example.hellocompose.data.login.model.UserAccount
 import com.example.hellocompose.data.login.model.Cards
 import com.example.hellocompose.data.login.remoteDS.RemoteDS
 import com.example.hellocompose.data.util.ExceptionInResponseBody
+import com.example.hellocompose.data.util.onSuccessResponse
 import com.example.hellocompose.ui.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -121,20 +122,7 @@ class LoginRepoImpl(
         }
     }
 
-    suspend inline fun <T, D> FlowCollector<Result<T>>.onSuccessResponse(
-        r: Result<D>,
-        onSuccess: (D) -> Unit
-    ) {
-        when (r) {
-            is Result.Success -> {
-                onSuccess(r.data)
-            }
-            is Result.Error -> {
-                emit(Result.Error(r.exception))
-            }
-            Result.Loading -> {
-                emit(Result.Loading)
-            }
-        }
+    override suspend fun resendSMS(): Result<Unit> {
+        return remoteDS.sendSmsCode(localDataSource.getPhoneNumber())
     }
 }

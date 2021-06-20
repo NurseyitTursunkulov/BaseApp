@@ -60,6 +60,7 @@ class LoginRepoImlTest {
 
     @Test
     fun `if getCardFree returns error there must be zero emits`() {
+        /**given*/
         runBlocking {
             val remoteDs = mockk<RemoteDS>()
             val localDS = mockk<LocalDataSource>() {
@@ -70,8 +71,10 @@ class LoginRepoImlTest {
             coEvery { remoteDs.getCardFree() } returns Result.Error(StabData.error)
             coEvery { localDS.saveUser(data) } returns Unit
 
-            val list = LoginRepoImpl(remoteDs,localDS).signIn(data).toList()
+            /**when*/
+            val list = LoginRepoImpl(remoteDs, localDS).signIn(data).toList()
 
+            /***expected*/
             val expectedList =
                 listOf(
                     Result.Loading,
@@ -109,7 +112,7 @@ class LoginRepoImlTest {
                 StabData.error
             )
 
-            val list = LoginRepoImpl(remoteDs,localDS).signIn(data).toList()
+            val list = LoginRepoImpl(remoteDs, localDS).signIn(data).toList()
 
             val expectedList =
                 listOf(
@@ -157,10 +160,10 @@ class LoginRepoImlTest {
             coEvery { remoteDs.getLastCardNumber() } returns Result.Success(1)
             coEvery { remoteDs.registerAccount(data) } returns Result.Success("")
             coEvery { remoteDs.generateCards(cardPrint) } returns Result.Success(
-                listOf(StabData.card.copy(id = 10,fromPrint = 11))
+                listOf(StabData.card.copy(id = 10, fromPrint = 11))
             )
 
-            val list = LoginRepoImpl(remoteDs,localDS).signIn(data).toList()
+            val list = LoginRepoImpl(remoteDs, localDS).signIn(data).toList()
 
             val expectedList =
                 listOf(
@@ -187,6 +190,7 @@ class LoginRepoImlTest {
 
     @Test
     fun `if getCardFree returns data other functions should not be called`() {
+        /**given*/
         runBlocking {
             val remoteDs = mockk<RemoteDS>()
             val localDS = mockk<LocalDataSource>()
@@ -198,8 +202,10 @@ class LoginRepoImlTest {
             coEvery { remoteDs.getCardFree() } returns Result.Success(listOf(StabData.card))
             coEvery { remoteDs.registerAccount(data) } returns Result.Success("jjj")
 
-            val list = LoginRepoImpl(remoteDs,localDS).signIn(data).toList()
+            /**when*/
+            val list = LoginRepoImpl(remoteDs, localDS).signIn(data).toList()
 
+            /**expected*/
             val expectedList =
                 listOf(
                     Result.Loading,
@@ -212,6 +218,7 @@ class LoginRepoImlTest {
                 remoteDs.getCardFree()
                 remoteDs.registerAccount(any())
                 localDS.saveUser(data)
+                //todo test to send sms code
             }
             coVerify(exactly = 0) {
                 remoteDs.getLastCardNumber()

@@ -26,4 +26,8 @@ class LoginMock : LoginRepo {
         }
     }
 
+    override suspend fun resendSMS(): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
 }

@@ -7,11 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hellocompose.domain.*
 import com.example.hellocompose.ui.util.Event
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainViewModel(
     private val loginUseCase: LoginUseCase,
@@ -23,6 +20,7 @@ class MainViewModel(
     val entryPointLiveData = MutableLiveData<Event<NavigationState>>()
     val showMainScreen = MutableLiveData<Boolean>()
     val showAuthScreen = MutableLiveData<Event<Boolean>>()
+    val sendNewCodeEnabled = MutableLiveData<Boolean>()
 
     init {
         Log.d("Nurs", "Viewmodel init")
@@ -31,13 +29,7 @@ class MainViewModel(
                 entryPointLiveData.postValue(Event(it))
             }
         }
-        viewModelScope.launch {
-            withContext(dispatcher) {
-                local.isUserSavedToLocalStorage().collect {
-                    Log.d("Nurs", "flow from datastore ${it}")
-                }
-            }
-        }
+
     }
 
     fun makeSuspendCall() {
@@ -52,7 +44,7 @@ class MainViewModel(
     }
 
     val showLoading = MutableLiveData<Boolean>()
-    val showError = MutableLiveData<Pair<Boolean,String>>()
+    val showError = MutableLiveData<Pair<Boolean, String>>()
     fun login(
         name: String,
         surname: String,
@@ -90,8 +82,8 @@ class MainViewModel(
 
     fun getToken(smsCode: String) {
         viewModelScope.launch {
-            withContext(dispatcher){
-                loginUseCase.getToken(smsCode).collect{
+            withContext(dispatcher) {
+                loginUseCase.getToken(smsCode).collect {
                     when (it) {
                         is VerifyPhoneNumberScreen.ShowLoading -> {
                             Log.d("Nurs", "loading true")

@@ -8,4 +8,5 @@ interface LoginRepo {
     suspend fun isUserLoggedIn():Flow<Result<Boolean>>
     suspend fun signIn(userAccount: UserAccount):Flow<Result<String>>
     suspend fun getToken(smsCode: String):Flow<Result<Unit>>
+    suspend fun resendSMS():Result<Unit>
 }

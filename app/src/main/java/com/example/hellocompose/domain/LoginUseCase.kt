@@ -3,6 +3,7 @@ package com.example.hellocompose.domain
 
 import com.example.hellocompose.data.login.LoginRepo
 import com.example.hellocompose.data.login.model.UserAccount
+import com.example.hellocompose.data.util.Second
 import com.example.hellocompose.ui.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -13,7 +14,7 @@ class LoginUseCase(
 ) {
     suspend fun login(
         name: String,
-        surname:String,
+        surname: String,
         phone: String,
         email: String,
         dateOfBirth: String
@@ -38,7 +39,7 @@ class LoginUseCase(
         }
     }
 
-    suspend fun getToken(smsCode: String) : Flow<VerifyPhoneNumberScreen<Unit>> = flow {
+    suspend fun getToken(smsCode: String): Flow<VerifyPhoneNumberScreen<Unit>> = flow {
         loginRepo.getToken(smsCode).collect {
             when (it) {
                 is Result.Success -> {
@@ -48,6 +49,18 @@ class LoginUseCase(
                 is Result.Error -> emit(VerifyPhoneNumberScreen.ShowError(it.exception))
             }
         }
+    }
+
+    suspend fun resendSms(): Flow<VerifyPhoneNumberScreen<Unit>> = flow {
+
+//        val resendSmsResponse = loginRepo.resendSMS()
+//        when (resendSmsResponse) {
+//            is Result.Success -> {
+//                emit(VerifyPhoneNumberScreen.NavigateToMainScreen(Unit))
+//            }
+//            is Result.Loading -> emit(VerifyPhoneNumberScreen.ShowLoading)
+//            is Result.Error -> emit(VerifyPhoneNumberScreen.ShowError(it.exception))
+//        }
     }
 }
 

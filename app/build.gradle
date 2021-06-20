@@ -81,13 +81,13 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:1.0.0-beta08"
     implementation "androidx.compose.material:material-icons-extended:1.0.0-beta08"
     // Koin main features for Android (Scope,ViewModel ...)
-    def koin_version = "3.0.2"
+    def koin_version = "3.1.0"
     implementation "io.insert-koin:koin-android:$koin_version"
 // Koin Android - experimental builder extensions
-    implementation "io.insert-koin:koin-android-ext:$koin_version"
+//    implementation "io.insert-koin:koin-android-ext:$koin_version"
 // Koin for Jetpack WorkManager
 // Koin for Jetpack Compose (unstable version)
-//    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
+    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
 
     //Retrofit2
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
@@ -101,7 +101,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
     implementation "com.google.accompanist:accompanist-insets:0.11.1"
-    implementation "io.github.vanpra.compose-material-dialogs:datetime:0.4.0"
+    implementation "io.github.vanpra.compose-material-dialogs:datetime:0.4.2"
 
     testImplementation "io.mockk:mockk:1.10.6"
     androidTestImplementation "io.mockk:mockk:1.10.6"

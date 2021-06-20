@@ -19,4 +19,6 @@
     <string name="registration">Регистрация</string>
     <string name="when_sms_did_not_come">Если не пришло СМС</string>
     <string name="send_new_code">Отправить новый код</string>
+    <string name="after_n_seconds">через %1s секунд</string>
+    <string name="when_sms_not_received">Если не пришло СМС</string>
 </resources>
