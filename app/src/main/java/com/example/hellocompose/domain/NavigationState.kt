@@ -7,6 +7,7 @@ sealed class LoginScreen<out R> {
 }
 sealed class VerifyPhoneNumberScreen<out R>{
     data class NavigateToMainScreen<out R>(val data: R) : VerifyPhoneNumberScreen<R>()
+    data class MessageSentToast<out R>(val data: R) : VerifyPhoneNumberScreen<R>()
     data class ShowError(val exception: Exception) : VerifyPhoneNumberScreen<Nothing>()
     object ShowLoading : VerifyPhoneNumberScreen<Nothing>()
 

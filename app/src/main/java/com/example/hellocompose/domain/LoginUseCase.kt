@@ -1,6 +1,7 @@
 package com.example.hellocompose.domain
 
 
+import android.util.Log
 import com.example.hellocompose.data.login.LoginRepo
 import com.example.hellocompose.data.login.model.UserAccount
 import com.example.hellocompose.data.util.Second
@@ -52,15 +53,17 @@ class LoginUseCase(
     }
 
     suspend fun resendSms(): Flow<VerifyPhoneNumberScreen<Unit>> = flow {
-
-//        val resendSmsResponse = loginRepo.resendSMS()
-//        when (resendSmsResponse) {
-//            is Result.Success -> {
-//                emit(VerifyPhoneNumberScreen.NavigateToMainScreen(Unit))
-//            }
-//            is Result.Loading -> emit(VerifyPhoneNumberScreen.ShowLoading)
-//            is Result.Error -> emit(VerifyPhoneNumberScreen.ShowError(it.exception))
-//        }
+        Log.d("Nurs","usecase resend sms")
+        val resendSmsResponse = loginRepo.resendSMS()
+        when (resendSmsResponse) {
+            is Result.Success -> {
+                emit(VerifyPhoneNumberScreen.MessageSentToast(Unit))
+            }
+            is Result.Loading -> emit(VerifyPhoneNumberScreen.ShowLoading)
+            is Result.Error -> emit(VerifyPhoneNumberScreen.ShowError(
+                resendSmsResponse.exception)
+            )
+        }
     }
 }
 

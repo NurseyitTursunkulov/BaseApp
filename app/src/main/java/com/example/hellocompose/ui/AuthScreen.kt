@@ -74,7 +74,7 @@ fun authScreen(
                             }
                             countTimerWithDisabledButton(textCounting)
                         } else {
-                            sendNewSmsText(modifier = Modifier.constrainAs(text) {
+                            requestNewSmsText(modifier = Modifier.constrainAs(text) {
                                 start.linkTo(parent.start, margin = 0.dp)
                                 linkTo(
                                     top = parent.top,
@@ -82,7 +82,7 @@ fun authScreen(
                                 )
                             })
 
-                            sendNewSmsButton(Modifier.constrainAs(button) {
+                            requestNewSmsButton(Modifier.constrainAs(button) {
                                 end.linkTo(parent.end, margin = 0.dp)
                             }) {
                                 scope.launch {
@@ -94,11 +94,12 @@ fun authScreen(
                                     }
                                 }
                                 vm.sendNewCodeEnabled.postValue(true)
+                                vm.sendNewSmsCode()
                             }
                         }
                     }
-                    sendSMSCodeView { telefon ->
-                        vm.getToken(telefon)
+                    sendSMSCodeView { smsCode ->
+                        vm.getToken(smsCode)
                     }
                 }
             } else {

@@ -244,7 +244,7 @@ fun countTimerWithDisabledButton(
 }
 
 @Composable
-fun sendNewSmsText(modifier: Modifier) {
+fun requestNewSmsText(modifier: Modifier) {
     Text(
         text = stringResource(R.string.when_sms_not_received),
         style = Typography.body2.copy(),
@@ -253,7 +253,7 @@ fun sendNewSmsText(modifier: Modifier) {
 }
 
 @Composable
-fun sendNewSmsButton(modifier: Modifier, onClick: () -> Unit) {
+fun requestNewSmsButton(modifier: Modifier, onClick: () -> Unit) {
     val horizontalGradient = Brush.horizontalGradient(
         colors = listOf(
             buttonGradientStart,
@@ -276,7 +276,7 @@ fun sendNewSmsButton(modifier: Modifier, onClick: () -> Unit) {
 }
 
 @Composable
-fun sendSMSCodeView(onSendButtonClick: (telefon: String) -> Unit) {
+fun sendSMSCodeView(onSendButtonClick: (smsCode: String) -> Unit) {
     Spacer(modifier = Modifier.padding(8.dp))
     var telefon by remember { mutableStateOf("") }
     Box(

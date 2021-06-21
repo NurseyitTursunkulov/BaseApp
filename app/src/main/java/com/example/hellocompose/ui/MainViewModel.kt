@@ -20,7 +20,7 @@ class MainViewModel(
     val entryPointLiveData = MutableLiveData<Event<NavigationState>>()
     val showMainScreen = MutableLiveData<Boolean>()
     val showAuthScreen = MutableLiveData<Event<Boolean>>()
-    val sendNewCodeEnabled = MutableLiveData<Boolean>()
+    val sendNewCodeEnabled = MutableLiveData<Boolean>()//todo make private set public get
 
     init {
         Log.d("Nurs", "Viewmodel init")
@@ -98,6 +98,16 @@ class MainViewModel(
                             entryPointLiveData.postValue(Event(NavigationState.NavigateToMainScreen))
                         }
                     }
+                }
+            }
+        }
+    }
+
+    fun sendNewSmsCode() {
+        viewModelScope.launch {
+            withContext(dispatcher){
+                loginUseCase.resendSms().collect {
+
                 }
             }
         }
