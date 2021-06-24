@@ -53,7 +53,6 @@ class LoginUseCase(
     }
 
     suspend fun resendSms(): Flow<VerifyPhoneNumberScreen<Unit>> = flow {
-        Log.d("Nurs","usecase resend sms")
         val resendSmsResponse = loginRepo.resendSMS()
         when (resendSmsResponse) {
             is Result.Success -> {
