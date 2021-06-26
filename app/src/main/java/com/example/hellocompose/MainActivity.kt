@@ -1,7 +1,6 @@
 package com.example.hellocompose
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
@@ -31,18 +30,10 @@ class MainActivity : ComponentActivity() {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     // A surface container using the 'background' color from the theme
                     Surface(color = MaterialTheme.colors.background) {
-//                        val loading: Boolean by mainViewModel.showLoading.observeAsState(false)
-//                        val showError: String by mainViewModel.showError.observeAsState("")
-                        val state = mainViewModel.entryPointLiveData.observeAsState()
-//                        Log.d("Nurs", "Nurs upper loading ${loading}")
+                        val state = mainViewModel.navigationLiveData.observeAsState()
                         state.value?.getContentIfNotHandled()?.let {
-                            Greeting(
+                            MainComposable(
                                 navigationState = it,
-//                                loading = loading, showError = showError,
-//                                onLoginClicl = { a, b, c, d, e ->
-//                                    mainViewModel.login(a, b, c, d, e)
-//                                }
-//                            mainViewModel
                                 setDecorFitsSystemWindows = {
                                     WindowCompat.setDecorFitsSystemWindows(
                                         window,
@@ -68,7 +59,7 @@ class MainActivity : ComponentActivity() {
 
 @ExperimentalAnimatedInsets
 @Composable
-fun Greeting(
+fun MainComposable(
     navigationState: NavigationState,
     setDecorFitsSystemWindows: () -> Unit = {},
     removeDecorFitsSystemWindows: () -> Unit = {},
@@ -86,17 +77,10 @@ fun Greeting(
 ) {
     when (navigationState) {
         is NavigationState.NavigateToMainScreen -> {
-            MainScreen(removeDecorFitsSystemWindows,vm)
+            MainScreen(removeDecorFitsSystemWindows, vm)
         }
         is NavigationState.NavigateToLoginScreen -> {
-//            Log.d("Nurs", "Nurs loading ${loading}")
-
-            loginScreen(vm,
-                setDecorFitsSystemWindows
-//                loading = loading,
-//                showError = showError,
-//                onLoginClicl = onLoginClicl
-            )
+            loginScreen( vm,setDecorFitsSystemWindows )
         }
         is NavigationState.ShowLoading -> {
             splashScreen()
@@ -104,13 +88,11 @@ fun Greeting(
         is NavigationState.ShowError -> {
             Text("ShowError")
         }
-        is NavigationState.NavigateToVerifyBySmsScreen ->{
-            authScreen(vm = vm,onNumberSendClicked =  {
+        is NavigationState.NavigateToVerifyBySmsScreen -> {
+            authScreen(vm = vm, onNumberSendClicked = {
             })
         }
     }
-
-
 }
 
 @Preview(showBackground = true)

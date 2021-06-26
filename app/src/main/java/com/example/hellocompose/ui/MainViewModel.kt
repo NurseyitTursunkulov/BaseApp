@@ -17,7 +17,7 @@ class MainViewModel(
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
     val state = MutableLiveData<String>()
-    val entryPointLiveData = MutableLiveData<Event<NavigationState>>()
+    val navigationLiveData = MutableLiveData<Event<NavigationState>>()
     val showMainScreen = MutableLiveData<Boolean>()
     val showAuthScreen = MutableLiveData<Event<Boolean>>()
     val sendNewCodeEnabled = MutableLiveData<Boolean>()//todo make private set public get
@@ -26,7 +26,7 @@ class MainViewModel(
         Log.d("Nurs", "Viewmodel init")
         viewModelScope.launch {
             entryPointUseCase.invoke().collect {
-                entryPointLiveData.postValue(Event(it))
+                navigationLiveData.postValue(Event(it))
             }
         }
 
@@ -72,7 +72,7 @@ class MainViewModel(
                         }
                         is LoginScreen.NavigateToVerifyPhoneNumber -> {
                             showLoading.postValue(false)
-                            entryPointLiveData.postValue(Event(NavigationState.NavigateToVerifyBySmsScreen))
+                            navigationLiveData.postValue(Event(NavigationState.NavigateToVerifyBySmsScreen))
                         }
                     }
                 }
@@ -95,7 +95,7 @@ class MainViewModel(
                         }
                         is VerifyPhoneNumberScreen.NavigateToMainScreen -> {
                             showLoading.postValue(false)
-                            entryPointLiveData.postValue(Event(NavigationState.NavigateToMainScreen))
+                            navigationLiveData.postValue(Event(NavigationState.NavigateToMainScreen))
                         }
                     }
                 }

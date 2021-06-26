@@ -44,14 +44,12 @@ fun loginScreen(
 ) {
     setDecorFitsSystemWindows()
 
-//    val vm = getViewModel<MainViewModel>()
     val loading: Boolean by vm.showLoading.observeAsState(false)
     val showError: Pair<Boolean,String> by vm.showError.observeAsState(initial =  Pair(false,""))
 
     ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
         Box() {
             Surface(
-//                color = Color.Black.copy(alpha = 0.1f),
                 modifier = Modifier.fillMaxSize()
             ) {}
             if (!loading) {
