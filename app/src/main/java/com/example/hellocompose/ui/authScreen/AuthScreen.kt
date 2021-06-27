@@ -1,10 +1,9 @@
-package com.example.hellocompose.ui
+package com.example.hellocompose.ui.authScreen
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,27 +17,21 @@ import com.example.hellocompose.ui.util.*
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 @ExperimentalAnimatedInsets
 @Composable
 fun authScreen(
-    phone: String = "",
-    onNumberSendClicked: (telefonNumber: String) -> Unit = {},
-    vm: MainViewModel = getViewModel<MainViewModel>(),
+    authScreenPresenter: AuthScreenPresenter
 ) {
-    val loading = vm.showLoading.observeAsState(false)
-    val showError: Pair<Boolean, String> by vm.showError.observeAsState(initial = Pair(false, ""))
-
 
     ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
         Box() {
             Surface(
                 modifier = Modifier.fillMaxSize()
             ) {}
-            if (loading.value != true) {
+            if (authScreenPresenter.loading != true) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -52,15 +45,10 @@ fun authScreen(
                             .fillMaxWidth()
                     ) {
                         val (button, text) = createRefs()
-
-                        val sendNewSmsCodeButtonEnabled: Boolean by vm.sendNewCodeEnabled.observeAsState(
-                            true
-                        )
-
                         val context = LocalContext.current
                         val scope = rememberCoroutineScope()
                         val START_COUNT_TIME = intPreferencesKey("example_counter")
-                        if (sendNewSmsCodeButtonEnabled) {
+                        if (authScreenPresenter.sendNewSmsCodeButtonEnabled) {
                             var textCounting: String by remember {
                                 mutableStateOf("")
                             }
@@ -68,9 +56,8 @@ fun authScreen(
                                 countRemainedSeconds(context, START_COUNT_TIME, updateTextCount = {
                                     textCounting = it
                                 },
-                                    countingFinished = {
-                                        vm.sendNewCodeEnabled.postValue(false)
-                                    })
+                                    countingFinished = authScreenPresenter.countingFinished
+                                )
                             }
                             countTimerWithDisabledButton(textCounting)
                         } else {
@@ -93,14 +80,12 @@ fun authScreen(
                                                 .toInt()
                                     }
                                 }
-                                vm.sendNewCodeEnabled.postValue(true)
-                                vm.sendNewSmsCode()
+                                authScreenPresenter.enableNewSmsCodeButton()
+                                authScreenPresenter.sendNewSmsCode()
                             }
                         }
                     }
-                    sendSMSCodeView { smsCode ->
-                        vm.getToken(smsCode)
-                    }
+                    sendSMSCodeView(onSendButtonClick = authScreenPresenter.onSendButtonClick)
                 }
             } else {
                 CircularProgressIndicator(
@@ -109,12 +94,11 @@ fun authScreen(
                         .align(Alignment.Center)
                 )
             }
-            if (showError.first) {
+            if (authScreenPresenter.showError.first) {
                 showErrorSnackbar(
-                    Modifier.align(Alignment.BottomCenter), showError.second
-                ) {
-                    vm.showError.postValue(Pair(false, ""))
-                }
+                    Modifier.align(Alignment.BottomCenter), authScreenPresenter.showError.second,
+                    onOkClick = authScreenPresenter.errorSnackBarOnOkClick
+                )
             }
         }
     }

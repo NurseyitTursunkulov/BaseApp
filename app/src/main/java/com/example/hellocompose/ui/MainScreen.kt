@@ -14,11 +14,10 @@ fun MainScreen(
     vm :MainViewModel
 ) {
     removeDecorFitsSystemWindows()
-//    val vm = getViewModel<MainViewModel>()
     val items = listOf(
-        Screen.Profile,
-        Screen.QrCode,
-        Screen.Main
+        ScreenNavigation.Profile,
+        ScreenNavigation.QrCode,
+        ScreenNavigation.Main
     )
     val navController = rememberNavController()
     Scaffold(
@@ -27,15 +26,14 @@ fun MainScreen(
         }
     ) {
 
-        NavHost(navController, startDestination = Screen.Profile.route) {
-            composable(Screen.Profile.route) {
-//                exampleViewModel.makeSuspendCall()
+        NavHost(navController, startDestination = ScreenNavigation.Profile.route) {
+            composable(ScreenNavigation.Profile.route) {
                 SettingsScreen(vm)
             }
-            composable(Screen.QrCode.route) {
+            composable(ScreenNavigation.QrCode.route) {
                 QRCodeScreen(vm)
             }
-            composable(Screen.Main.route) {
+            composable(ScreenNavigation.Main.route) {
                 Text("ooo")
             }
         }

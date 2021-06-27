@@ -1,4 +1,4 @@
-package com.example.hellocompose.ui
+package com.example.hellocompose.ui.loginScreen
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -7,7 +7,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,8 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hellocompose.R
 import com.example.hellocompose.ui.theme.HelloComposeTheme
 import com.example.hellocompose.ui.util.*
@@ -29,30 +26,16 @@ import com.google.accompanist.insets.ProvideWindowInsets
 @OptIn(ExperimentalAnimatedInsets::class)
 @Composable
 fun loginScreen(
-//    loading: Boolean,
-//    showError: String,
-//    onLoginClicl: (
-//        name: String,
-//        surname: String,
-//        phone: String,
-//        email: String,
-//        dateOfBirth: String
-//    ) -> Unit
-    vm :MainViewModel,
-
+    loginScreenPresenter: LoginScreenPresenter,
     setDecorFitsSystemWindows:()->Unit = {}
 ) {
     setDecorFitsSystemWindows()
-
-    val loading: Boolean by vm.showLoading.observeAsState(false)
-    val showError: Pair<Boolean,String> by vm.showError.observeAsState(initial =  Pair(false,""))
-
     ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
         Box() {
             Surface(
                 modifier = Modifier.fillMaxSize()
             ) {}
-            if (!loading) {
+            if (!loginScreenPresenter.loading) {
                 Column(
                     modifier = Modifier
                         .padding(28.dp)
@@ -158,7 +141,6 @@ fun loginScreen(
 
                     val context = LocalContext.current.resources
                     registerButton(modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
-//                        vm.datasourceTest()
                         if (email.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
                                 .matches()
                         ) {
@@ -208,30 +190,21 @@ fun loginScreen(
                                 .matches()
                             && pattern.matches(phoneNumber)
                         ) {
-                            vm.login(
-                                name,
-                                surName,
-                                phoneNumber,
-                                email,
-                                birthDate
-                            )
-//                            onLoginClicl(
+//                            vm.login(
 //                                name,
 //                                surName,
 //                                phoneNumber,
 //                                email,
-//                                birthDate,
+//                                birthDate
 //                            )
+                            loginScreenPresenter.onLoginClicl(
+                                name,
+                                surName,
+                                phoneNumber,
+                                email,
+                                birthDate,
+                            )
                         }
-
-
-//                    vm.login(
-//                        name = name,
-//                        surname = surname,
-//                        phone = telefon,
-//                        email = email,
-//                        dateOfBirth = "2021-05-13"
-//                    )
 
                     }
                     authorizeText()
@@ -244,7 +217,7 @@ fun loginScreen(
                         .align(Alignment.Center)
                 )
             }
-            if (showError.first) {
+            if (loginScreenPresenter.showError.first) {
                 Snackbar(
                     modifier = Modifier
                         .padding(4.dp, bottom = 50.dp)
@@ -252,13 +225,13 @@ fun loginScreen(
                     actionOnNewLine = true,
                     action = {
                         TextButton(onClick = {
-                            vm.showError.postValue(Pair(false,""))
+                            loginScreenPresenter.onErrorOkClick()
                         }) {
                             Text(text = "Remove")
                         }
                     }
                 ) {
-                    Text(text = showError.second)
+                    Text(text = loginScreenPresenter.showError.second)
                 }
             }
         }
