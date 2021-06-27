@@ -17,17 +17,24 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hellocompose.R
+import com.example.hellocompose.ui.settingsScreen.SettingsScreenPresenter
 import com.example.hellocompose.ui.theme.itemsColor
 
 @Composable
-fun SettingsScreen(vm: MainViewModel ) {
+fun SettingsScreen(
+    settingsScreenPresenter:SettingsScreenPresenter
+) {
 
-    val loading: Boolean by vm.showMainScreen.observeAsState(false)
+//    val loading: Boolean by vm.showMainScreen.observeAsState(false)
 
     Column(modifier = Modifier.padding(28.dp)) {
-        Text(stringResource(R.string.settings_label), color = Color.Black, style = MaterialTheme.typography.h6)
+        Text(
+            stringResource(R.string.settings_label),
+            color = Color.Black,
+            style = MaterialTheme.typography.h6
+        )
         Spacer(Modifier.height(16.dp))
-        if(loading){
+        if (settingsScreenPresenter.loading) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(60.dp)
@@ -124,7 +131,7 @@ fun SettingsScreen(vm: MainViewModel ) {
         Spacer(Modifier.height(16.dp))
         OutlinedButton(
             onClick = {
-                      vm.makeSuspendCall()
+                settingsScreenPresenter.updateSettings()
             },
             modifier = Modifier.align(alignment = Alignment.CenterHorizontally),  //avoid the oval shape
             border = BorderStroke(1.dp, itemsColor),

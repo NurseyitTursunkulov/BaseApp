@@ -9,12 +9,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.hellocompose.R
 
 
-sealed class Screen(
+sealed class ScreenNavigation(
     val route: String,
     @StringRes val resourceId: Int,
     val imageVector: ImageVector
 ) {
-    object Profile : Screen("profile", R.string.profile, Icons.Outlined.QrCode2)
-    object QrCode : Screen("qr-code", R.string.qr_code, Icons.Outlined.PersonPin)
-    object Main : Screen("main", R.string.main, Icons.Outlined.LocalFlorist)
+    object Profile : ScreenNavigation("profile", R.string.profile, Icons.Outlined.QrCode2)
+    object QrCode : ScreenNavigation("qr-code", R.string.qr_code, Icons.Outlined.PersonPin)
+    object Main : ScreenNavigation("main", R.string.main, Icons.Outlined.LocalFlorist)
 }

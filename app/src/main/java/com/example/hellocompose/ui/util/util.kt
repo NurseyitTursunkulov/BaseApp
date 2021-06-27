@@ -12,7 +12,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -43,7 +42,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun createBottomNavBar(
     navController: NavHostController,
-    items: List<Screen>
+    items: List<ScreenNavigation>
 ) {
     BottomNavigation(backgroundColor = bottomNavBackColor) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -55,7 +54,6 @@ fun createBottomNavBar(
                 Modifier
             }
             BottomNavigationItem(
-//                modifier = bottomNavigationItemModifier,
                 icon = {
                     Icon(screen.imageVector, stringResource(screen.resourceId))
                 },

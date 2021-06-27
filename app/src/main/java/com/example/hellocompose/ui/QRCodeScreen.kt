@@ -21,12 +21,9 @@ import com.example.hellocompose.ui.theme.itemsColor
 //import org.koin.androidx.compose.getStateViewModel
 
 @Composable
-fun QRCodeScreen(vm: MainViewModel) {
-    val name: String by vm.state.observeAsState("")
-    Log.d("Nurs","qr ${name}")
+fun QRCodeScreen() {
     OutlinedButton(
         onClick = {
-            vm.makeSuspendCall()
         },
 //        modifier = Modifier.align(alignment = Alignment.CenterHorizontally),  //avoid the oval shape
         border = BorderStroke(1.dp, itemsColor),

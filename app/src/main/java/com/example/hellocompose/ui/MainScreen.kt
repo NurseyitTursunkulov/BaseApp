@@ -6,19 +6,19 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.hellocompose.ui.settingsScreen.SettingsScreenPresenter
 
 
 @Composable
 fun MainScreen(
     removeDecorFitsSystemWindows: () -> Unit = {},
-    vm :MainViewModel
+    settingsScreenPresenter: SettingsScreenPresenter
 ) {
     removeDecorFitsSystemWindows()
-//    val vm = getViewModel<MainViewModel>()
     val items = listOf(
-        Screen.Profile,
-        Screen.QrCode,
-        Screen.Main
+        ScreenNavigation.Profile,
+        ScreenNavigation.QrCode,
+        ScreenNavigation.Main
     )
     val navController = rememberNavController()
     Scaffold(
@@ -27,15 +27,14 @@ fun MainScreen(
         }
     ) {
 
-        NavHost(navController, startDestination = Screen.Profile.route) {
-            composable(Screen.Profile.route) {
-//                exampleViewModel.makeSuspendCall()
-                SettingsScreen(vm)
+        NavHost(navController, startDestination = ScreenNavigation.Profile.route) {
+            composable(ScreenNavigation.Profile.route) {
+                SettingsScreen(settingsScreenPresenter)
             }
-            composable(Screen.QrCode.route) {
-                QRCodeScreen(vm)
+            composable(ScreenNavigation.QrCode.route) {
+                QRCodeScreen()
             }
-            composable(Screen.Main.route) {
+            composable(ScreenNavigation.Main.route) {
                 Text("ooo")
             }
         }
