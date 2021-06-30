@@ -95,7 +95,7 @@ fun loginScreen(
                     ) {
                         phoneNumber = it
                         val pattern = "^[1-9][0-9]{9,14}$".toRegex()
-                        if ( pattern.matches(phoneNumber)) {
+                        if ( pattern.matches(phoneNumber)) { //todo add else statement and show descriptive text
                             phoneNumberErrorText = ""
                             phoneNumberContainsError = false
                         }
@@ -190,13 +190,6 @@ fun loginScreen(
                                 .matches()
                             && pattern.matches(phoneNumber)
                         ) {
-//                            vm.login(
-//                                name,
-//                                surName,
-//                                phoneNumber,
-//                                email,
-//                                birthDate
-//                            )
                             loginScreenPresenter.onLoginClicl(
                                 name,
                                 surName,
@@ -210,7 +203,6 @@ fun loginScreen(
                     authorizeText()
                 }
             } else {
-                Log.d("Nurs", "loadind")
                 CircularProgressIndicator(
                     modifier = Modifier
                         .size(60.dp)
