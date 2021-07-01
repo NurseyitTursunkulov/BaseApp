@@ -15,7 +15,7 @@ class EntryPointUseCase(private val loginRepo: LoginRepo) {
                     if (it.data) {
                         emit(NavigationState.NavigateToMainScreen)
                     } else {
-                        emit(NavigationState.NavigateToLoginScreen)
+                        emit(NavigationState.NavigateToVerifyBySmsScreen)
                     }
                 }
                 is Result.Loading -> emit(NavigationState.ShowLoading)

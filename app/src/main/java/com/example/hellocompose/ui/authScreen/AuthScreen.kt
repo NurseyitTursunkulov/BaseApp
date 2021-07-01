@@ -23,7 +23,14 @@ import java.util.concurrent.TimeUnit
 @ExperimentalAnimatedInsets
 @Composable
 fun authScreen(
-    authScreenPresenter: AuthScreenPresenter
+    loading :Boolean,
+    showError: Pair<Boolean, String>,
+    sendNewSmsCodeButtonEnabled: Boolean,
+    disableSendNewCodeView:()->Unit,
+    enableSendNewCodeView:()->Unit,
+    sendNewSmsCode:()->Unit,
+    getToken:(smsCode:String)->Unit,
+    detachErrorSnackbar:()->Unit
 ) {
 
     ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
@@ -31,7 +38,7 @@ fun authScreen(
             Surface(
                 modifier = Modifier.fillMaxSize()
             ) {}
-            if (authScreenPresenter.loading != true) {
+            if (loading != true) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -48,16 +55,17 @@ fun authScreen(
                         val context = LocalContext.current
                         val scope = rememberCoroutineScope()
                         val START_COUNT_TIME = intPreferencesKey("example_counter")
-                        if (authScreenPresenter.sendNewSmsCodeButtonEnabled) {
+                        if (sendNewSmsCodeButtonEnabled) {
                             var textCounting: String by remember {
                                 mutableStateOf("")
                             }
-                            scope.launch {
+                            LaunchedEffect(Unit) {
                                 countRemainedSeconds(context, START_COUNT_TIME, updateTextCount = {
                                     textCounting = it
                                 },
-                                    countingFinished = authScreenPresenter.countingFinished
-                                )
+                                    countingFinished = {
+                                        disableSendNewCodeView()
+                                    })
                             }
                             countTimerWithDisabledButton(textCounting)
                         } else {
@@ -80,12 +88,14 @@ fun authScreen(
                                                 .toInt()
                                     }
                                 }
-                                authScreenPresenter.enableNewSmsCodeButton()
-                                authScreenPresenter.sendNewSmsCode()
+                                enableSendNewCodeView()
+                                sendNewSmsCode()
                             }
                         }
                     }
-                    sendSMSCodeView(onSendButtonClick = authScreenPresenter.onSendButtonClick)
+                    sendSMSCodeView { smsCode ->
+                        getToken(smsCode)
+                    }
                 }
             } else {
                 CircularProgressIndicator(
@@ -94,11 +104,12 @@ fun authScreen(
                         .align(Alignment.Center)
                 )
             }
-            if (authScreenPresenter.showError.first) {
+            if (showError.first) {
                 showErrorSnackbar(
-                    Modifier.align(Alignment.BottomCenter), authScreenPresenter.showError.second,
-                    onOkClick = authScreenPresenter.errorSnackBarOnOkClick
-                )
+                    Modifier.align(Alignment.BottomCenter), showError.second
+                ) {
+                    detachErrorSnackbar()
+                }
             }
         }
     }

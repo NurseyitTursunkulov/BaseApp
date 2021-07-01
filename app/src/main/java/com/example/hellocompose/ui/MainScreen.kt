@@ -11,8 +11,8 @@ import com.example.hellocompose.ui.settingsScreen.SettingsScreenPresenter
 
 @Composable
 fun MainScreen(
-    removeDecorFitsSystemWindows: () -> Unit = {},
-    settingsScreenPresenter: SettingsScreenPresenter
+    loading: Boolean, updateSettings: () -> Unit,
+    removeDecorFitsSystemWindows: () -> Unit = {}
 ) {
     removeDecorFitsSystemWindows()
     val items = listOf(
@@ -29,7 +29,7 @@ fun MainScreen(
 
         NavHost(navController, startDestination = ScreenNavigation.Profile.route) {
             composable(ScreenNavigation.Profile.route) {
-                SettingsScreen(settingsScreenPresenter)
+                SettingsScreen(loading, updateSettings)
             }
             composable(ScreenNavigation.QrCode.route) {
                 QRCodeScreen()

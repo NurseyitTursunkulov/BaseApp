@@ -21,9 +21,7 @@ import com.example.hellocompose.ui.settingsScreen.SettingsScreenPresenter
 import com.example.hellocompose.ui.theme.itemsColor
 
 @Composable
-fun SettingsScreen(
-    settingsScreenPresenter:SettingsScreenPresenter
-) {
+fun SettingsScreen(loading: Boolean, updateSettings: () -> Unit) {
 
 //    val loading: Boolean by vm.showMainScreen.observeAsState(false)
 
@@ -34,7 +32,7 @@ fun SettingsScreen(
             style = MaterialTheme.typography.h6
         )
         Spacer(Modifier.height(16.dp))
-        if (settingsScreenPresenter.loading) {
+        if (loading) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(60.dp)
@@ -131,7 +129,7 @@ fun SettingsScreen(
         Spacer(Modifier.height(16.dp))
         OutlinedButton(
             onClick = {
-                settingsScreenPresenter.updateSettings()
+                updateSettings()
             },
             modifier = Modifier.align(alignment = Alignment.CenterHorizontally),  //avoid the oval shape
             border = BorderStroke(1.dp, itemsColor),

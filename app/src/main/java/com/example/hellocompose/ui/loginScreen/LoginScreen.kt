@@ -1,6 +1,5 @@
 package com.example.hellocompose.ui.loginScreen
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,8 +25,17 @@ import com.google.accompanist.insets.ProvideWindowInsets
 @OptIn(ExperimentalAnimatedInsets::class)
 @Composable
 fun loginScreen(
-    loginScreenPresenter: LoginScreenPresenter,
-    setDecorFitsSystemWindows:()->Unit = {}
+    loading: Boolean,
+    showError: Pair<Boolean, String>,
+    onLoginClicl: (
+        name: String,
+        surname: String,
+        phone: String,
+        email: String,
+        dateOfBirth: String
+    ) -> Unit,
+    closeErrorView: () -> Unit,
+    setDecorFitsSystemWindows: () -> Unit = {}
 ) {
     setDecorFitsSystemWindows()
     ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
@@ -35,7 +43,7 @@ fun loginScreen(
             Surface(
                 modifier = Modifier.fillMaxSize()
             ) {}
-            if (!loginScreenPresenter.loading) {
+            if (!loading) {
                 Column(
                     modifier = Modifier
                         .padding(28.dp)
@@ -95,7 +103,7 @@ fun loginScreen(
                     ) {
                         phoneNumber = it
                         val pattern = "^[1-9][0-9]{9,14}$".toRegex()
-                        if ( pattern.matches(phoneNumber)) { //todo add else statement and show descriptive text
+                        if (pattern.matches(phoneNumber)) {
                             phoneNumberErrorText = ""
                             phoneNumberContainsError = false
                         }
@@ -190,7 +198,7 @@ fun loginScreen(
                                 .matches()
                             && pattern.matches(phoneNumber)
                         ) {
-                            loginScreenPresenter.onLoginClicl(
+                            onLoginClicl(
                                 name,
                                 surName,
                                 phoneNumber,
@@ -209,7 +217,7 @@ fun loginScreen(
                         .align(Alignment.Center)
                 )
             }
-            if (loginScreenPresenter.showError.first) {
+            if (showError.first) {
                 Snackbar(
                     modifier = Modifier
                         .padding(4.dp, bottom = 50.dp)
@@ -217,13 +225,13 @@ fun loginScreen(
                     actionOnNewLine = true,
                     action = {
                         TextButton(onClick = {
-                            loginScreenPresenter.onErrorOkClick()
+                            closeErrorView()
                         }) {
                             Text(text = "Remove")
                         }
                     }
                 ) {
-                    Text(text = loginScreenPresenter.showError.second)
+                    Text(text = showError.second)
                 }
             }
         }
@@ -238,3 +246,4 @@ fun LoginPreview() {
 //        loginScreen(vm = )
     }
 }
+
