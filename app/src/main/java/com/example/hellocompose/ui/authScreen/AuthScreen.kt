@@ -64,7 +64,7 @@ fun authScreen(
                                     textCounting = it
                                 },
                                     countingFinished = {
-                                        disableSendNewCodeView()
+                                        enableSendNewCodeView()
                                     })
                             }
                             countTimerWithDisabledButton(textCounting)
@@ -88,7 +88,7 @@ fun authScreen(
                                                 .toInt()
                                     }
                                 }
-                                enableSendNewCodeView()
+                                disableSendNewCodeView()
                                 sendNewSmsCode()
                             }
                         }

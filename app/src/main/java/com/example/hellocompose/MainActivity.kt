@@ -101,12 +101,12 @@ class MainActivity : ComponentActivity() {
                                     sendNewSmsCodeButtonEnabled,
                                     disableSendNewCodeView = {
                                         mainViewModel.sendNewCodeEnabled.postValue(
-                                            false
+                                            true
                                         )
                                     },
                                     enableSendNewCodeView = {
                                         mainViewModel.sendNewCodeEnabled.postValue(
-                                            true
+                                            false
                                         )
                                     },
                                     sendNewSmsCode = { mainViewModel.sendNewSmsCode() },
