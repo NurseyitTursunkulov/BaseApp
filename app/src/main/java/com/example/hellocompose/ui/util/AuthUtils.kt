@@ -18,10 +18,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
@@ -202,36 +206,27 @@ fun headerText(text: String) {
         )
     }
 }
-
+const val disabledSendNewSmsButton = "disabledSendNewSmsButton"
 @Composable
 fun countTimerWithDisabledButton(
     text2: String
 ) {
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxWidth()
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxSize()
     ) {
-        val (button, text) = createRefs()
         Text(text = stringResource(R.string.after_n_seconds, text2),
             color = Color.Black.copy(alpha = 0.2f),
             modifier = Modifier
-                .padding(start = 8.dp)
-                .constrainAs(text) {
-                    start.linkTo(parent.start, margin = 0.dp)
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
-                    )
-                }
+                .clearAndSetSemantics { contentDescription = countTimerText }
+                .padding(start = 0.dp)
         )
 
         Button(
             onClick = {}, modifier = Modifier
-                .padding(4.dp)
-                .constrainAs(button) {
-                    end.linkTo(parent.end, margin = 0.dp)
-
-                }, enabled = false
+                .clearAndSetSemantics { contentDescription = disabledSendNewSmsButton }
+                .padding(end = 0.dp), enabled = false
         ) {
             Text(
                 text = stringResource(R.string.send_new_code),
@@ -250,6 +245,33 @@ fun requestNewSmsText(modifier: Modifier) {
         style = Typography.body2.copy(),
         modifier = modifier
     )
+}
+
+const val requestNewSmsText = "requestNewSmsText"
+const val requestNewSmsButton = "requestNewSmsButton"
+const val countTimerText = "countTimerText"
+
+@Composable
+fun requestNewSmsView(onClick: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        requestNewSmsText(modifier = Modifier
+            .clearAndSetSemantics {
+                contentDescription = requestNewSmsText
+            }
+            .padding(start = 0.dp)
+        )
+
+        requestNewSmsButton(
+            onClick = onClick, modifier = Modifier
+                .clearAndSetSemantics { contentDescription = requestNewSmsButton }
+                .padding(end = 0.dp)
+        )
+    }
+
 }
 
 @Composable
@@ -328,7 +350,8 @@ fun showErrorSnackbar(
 ) {
     Snackbar(
         modifier = Modifier
-            .padding(4.dp, bottom = 50.dp).then(modifier),
+            .padding(4.dp, bottom = 50.dp)
+            .then(modifier),
         actionOnNewLine = true,
         action = {
             TextButton(
@@ -347,13 +370,20 @@ suspend fun countRemainedSeconds(
     context: Context,
     START_COUNT_TIME: Preferences.Key<Int>,
     updateTextCount: (count: String) -> Unit,
-    countingFinished: () -> Unit
+    countingFinished: () -> Unit,
+    getLastSavedTime: (() -> Int)?// only for testing puerposes
+
 ) {
-    val lastSavedTime =
+    var lastSavedTime: Int? = if (getLastSavedTime == null) {
         context.dataStore.data.first()[START_COUNT_TIME]
+    } else {
+        getLastSavedTime()
+    }
+
     lastSavedTime?.let {
         val sec = TimeUnit.MILLISECONDS.toSeconds(Date().time)
-        val remainedTimeInSecond = (sec - it)
+
+        val remainedTimeInSecond = if (getLastSavedTime != null) getLastSavedTime() else (sec - it)
         when {
             remainedTimeInSecond.toInt() < ONE_MINUTE -> {
                 for (i in (ONE_MINUTE - remainedTimeInSecond.toInt()).downTo(

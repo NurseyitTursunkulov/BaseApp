@@ -60,26 +60,49 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'win32-x86-64/attach_hotspot_windows.dll'
+        exclude 'win32-x86/attach_hotspot_windows.dll'
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/licenses/ASM'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
+    }
+
 }
 
 dependencies {
-    implementation "androidx.core:core-ktx:1.3.2"
+    implementation "androidx.core:core-ktx:1.6.0"
     implementation "androidx.appcompat:appcompat:1.3.0"
     implementation "com.google.android.material:material:1.3.0"
     implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:1.0.0-beta08"
-    implementation "androidx.compose.ui:ui-tooling:1.0.0-beta08"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
-    implementation "androidx.activity:activity-compose:1.3.0-beta01"
+    implementation "androidx.activity:activity-compose:1.3.0-rc01"
     implementation "androidx.datastore:datastore-core:1.0.0-beta01"
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     testImplementation "junit:junit:4.13.2"
-    androidTestImplementation "androidx.test.ext:junit:1.1.2"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.3.0"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.0.0-beta08"
+    androidTestImplementation "androidx.test.ext:junit:1.1.3"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    // Needed for createComposeRule, but not createAndroidComposeRule:
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.11.1"
     implementation "androidx.navigation:navigation-compose:2.4.0-alpha02"
-    implementation "androidx.compose.runtime:runtime-livedata:1.0.0-beta08"
-    implementation "androidx.compose.material:material-icons-extended:1.0.0-beta08"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
     // Koin main features for Android (Scope,ViewModel ...)
     def koin_version = "3.1.0"
     implementation "io.insert-koin:koin-android:$koin_version"
@@ -98,8 +121,8 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
 
     //Kotlin Coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0"
     implementation "com.google.accompanist:accompanist-insets:0.11.1"
     implementation "io.github.vanpra.compose-material-dialogs:datetime:0.4.2"
 
@@ -113,7 +136,7 @@ dependencies {
 //    implementation ("com.google.protobuf:protobuf-javalite:3.10.0")
     api "com.google.protobuf:protobuf-javalite:4.0.0-rc-2"
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha07"
-
+    implementation "androidx.compose.ui:ui-tooling:1.0.0-rc01"
 }
 
 protobuf {

@@ -7,6 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -23,14 +25,15 @@ import java.util.concurrent.TimeUnit
 @ExperimentalAnimatedInsets
 @Composable
 fun authScreen(
-    loading :Boolean,
+    loading: Boolean,
     showError: Pair<Boolean, String>,
     sendNewSmsCodeButtonEnabled: Boolean,
-    disableSendNewCodeView:()->Unit,
-    enableSendNewCodeView:()->Unit,
-    sendNewSmsCode:()->Unit,
-    getToken:(smsCode:String)->Unit,
-    detachErrorSnackbar:()->Unit
+    disableSendNewCodeView: () -> Unit,
+    enableSendNewCodeView: () -> Unit,
+    sendNewSmsCode: () -> Unit,
+    getToken: (smsCode: String) -> Unit,
+    detachErrorSnackbar: () -> Unit,
+    getLastSavedTime: (() -> Int)? = null
 ) {
 
     ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
@@ -38,7 +41,7 @@ fun authScreen(
             Surface(
                 modifier = Modifier.fillMaxSize()
             ) {}
-            if (loading != true) {
+            if (!loading) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -47,11 +50,6 @@ fun authScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     headerView()
-                    ConstraintLayout(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        val (button, text) = createRefs()
                         val context = LocalContext.current
                         val scope = rememberCoroutineScope()
                         val START_COUNT_TIME = intPreferencesKey("example_counter")
@@ -60,26 +58,19 @@ fun authScreen(
                                 mutableStateOf("")
                             }
                             LaunchedEffect(Unit) {
-                                countRemainedSeconds(context, START_COUNT_TIME, updateTextCount = {
-                                    textCounting = it
-                                },
+                                countRemainedSeconds(
+                                    context, START_COUNT_TIME,
+                                    updateTextCount = {
+                                        textCounting = it
+                                    },
                                     countingFinished = {
                                         enableSendNewCodeView()
-                                    })
+                                    },
+                                    getLastSavedTime = getLastSavedTime)
                             }
                             countTimerWithDisabledButton(textCounting)
                         } else {
-                            requestNewSmsText(modifier = Modifier.constrainAs(text) {
-                                start.linkTo(parent.start, margin = 0.dp)
-                                linkTo(
-                                    top = parent.top,
-                                    bottom = parent.bottom,
-                                )
-                            })
-
-                            requestNewSmsButton(Modifier.constrainAs(button) {
-                                end.linkTo(parent.end, margin = 0.dp)
-                            }) {
+                            requestNewSmsView {
                                 scope.launch {
                                     context.dataStore.edit { settings ->
                                         settings[START_COUNT_TIME] =
@@ -92,7 +83,6 @@ fun authScreen(
                                 sendNewSmsCode()
                             }
                         }
-                    }
                     sendSMSCodeView { smsCode ->
                         getToken(smsCode)
                     }
