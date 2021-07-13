@@ -8,6 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
@@ -22,6 +23,7 @@ import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.ProvideWindowInsets
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@ExperimentalComposeUiApi
 class MainActivity : ComponentActivity() {
     val mainViewModel: MainViewModel by viewModel()
 
@@ -118,8 +120,8 @@ class MainActivity : ComponentActivity() {
                                                 ""
                                             )
                                         )
-                                    }
-
+                                    },
+                                    showError = {}
                                 )
                             }
                         }

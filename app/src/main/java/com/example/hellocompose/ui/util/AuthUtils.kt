@@ -6,10 +6,12 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -17,6 +19,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -210,7 +213,9 @@ fun headerText(text: String) {
         )
     }
 }
+
 const val disabledSendNewSmsButton = "disabledSendNewSmsButton"
+
 @Composable
 fun countTimerWithDisabledButton(
     text2: String
@@ -301,11 +306,15 @@ fun requestNewSmsButton(modifier: Modifier, onClick: () -> Unit) {
             .then(modifier)
     )
 }
+
 val SMSCodeView = "SMSCodeView"
+
+@ExperimentalComposeUiApi
 @Composable
-fun sendSMSCodeView(onSendButtonClick: (smsCode: String) -> Unit) {
+fun sendSMSCodeView(onSendButtonClick: (smsCode: String) -> Unit, onErrorAction: () -> Unit) {
     Spacer(modifier = Modifier.padding(8.dp))
     var telefon by remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
     Box(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(4.dp))
@@ -318,18 +327,22 @@ fun sendSMSCodeView(onSendButtonClick: (smsCode: String) -> Unit) {
                 unfocusedBorderColor = Color.Black.copy(alpha = 0.1f)
             ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            keyboardActions = KeyboardActions(
+                onDone = {keyboardController?.hide()}),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(shape = RoundedCornerShape(4.dp))
                 .navigationBarsWithImePadding()
-                .testTag(SMSCodeView )
-            ,
+                .testTag(SMSCodeView),
             trailingIcon = {
                 Text(
                     "продолжить", color = Color.White, modifier = Modifier
                         .clickable {
                             if (telefon.isDigit() && telefon.isNotEmpty()) {
                                 onSendButtonClick(telefon)
+                            } else {
+                                onErrorAction()
+                                keyboardController?.hide()
                             }
                         }
                         .background(
@@ -344,7 +357,6 @@ fun sendSMSCodeView(onSendButtonClick: (smsCode: String) -> Unit) {
                         .clearAndSetSemantics { contentDescription = getTokenButton }
                         .height(TextFieldDefaults.MinHeight - 2.dp)
                         .padding(horizontal = 16.dp, vertical = 16.dp)
-
                 )
             })
 
@@ -352,12 +364,12 @@ fun sendSMSCodeView(onSendButtonClick: (smsCode: String) -> Unit) {
     Spacer(modifier = Modifier.padding(156.dp))
 }
 
-fun String.isDigit():Boolean{
+fun String.isDigit(): Boolean {
     val pattern = Pattern.compile("^[0-9]*?[0-9]*\$");
     val matcher = pattern.matcher(this);
-   return matcher.find()
+    return matcher.find()
 }
-
+const val ErrorSnackbar = "ErrorSnackbar"
 @Composable
 fun showErrorSnackbar(
     modifier: Modifier,
@@ -367,6 +379,7 @@ fun showErrorSnackbar(
     Snackbar(
         modifier = Modifier
             .padding(4.dp, bottom = 50.dp)
+            .testTag(ErrorSnackbar)
             .then(modifier),
         actionOnNewLine = true,
         action = {

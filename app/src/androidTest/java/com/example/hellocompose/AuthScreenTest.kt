@@ -1,13 +1,10 @@
 package com.example.hellocompose
 
-import android.content.res.Resources
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.core.view.WindowCompat
 import com.example.hellocompose.ui.authScreen.authScreen
 import com.example.hellocompose.ui.authScreen.circularProgressIndicator
 import com.example.hellocompose.ui.changeStatusBarColor
@@ -15,7 +12,6 @@ import com.example.hellocompose.ui.theme.HelloComposeTheme
 import com.example.hellocompose.ui.util.*
 import com.example.hellocompose.ui.util.requestNewSmsButton
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
-import kotlinx.coroutines.delay
 import org.junit.Rule
 import org.junit.Test
 
@@ -25,6 +21,7 @@ import org.junit.Test
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimatedInsets
 class AuthScreenTest {
     @get:Rule
@@ -40,7 +37,7 @@ class AuthScreenTest {
             HelloComposeTheme {
                 authScreen(
                     loading = loading.value,
-                    showError = showError.value,
+                    errorState = showError.value,
                     sendNewSmsCodeButtonEnabled = sendNewSmsCodeButtonEnabled.value,
                     disableSendNewCodeView = {
                         sendNewSmsCodeButtonEnabled.value = true
@@ -59,7 +56,8 @@ class AuthScreenTest {
                     },
                     getLastSavedTime = {
                         50
-                    }
+                    },
+                    showError = {}
                 )
             }
         }
@@ -82,6 +80,62 @@ class AuthScreenTest {
         composeTestRule.onNodeWithContentDescription(circularProgressIndicator).assertIsDisplayed()
         composeTestRule.mainClock.advanceTimeBy(5000)
     }
+    @Test
+    fun authScreenGetTokenTestWithInCorrectCode() {
+        composeTestRule.setContent {
+            val errorState = remember { mutableStateOf(Pair(false, "")) }
+            val sendNewSmsCodeButtonEnabled = remember { mutableStateOf(false) }
+            val loading = remember { mutableStateOf(false) }
+            changeStatusBarColor()
+            HelloComposeTheme {
+                authScreen(
+                    loading = loading.value,
+                    errorState = errorState.value,
+                    sendNewSmsCodeButtonEnabled = sendNewSmsCodeButtonEnabled.value,
+                    disableSendNewCodeView = {
+                        sendNewSmsCodeButtonEnabled.value = true
+                    },
+                    enableSendNewCodeView = {
+                        sendNewSmsCodeButtonEnabled.value = false
+                    },
+                    sendNewSmsCode = {
+                        loading.value = true
+                    },
+                    getToken = {
+                        loading.value = true
+                    },
+                    detachErrorSnackbar = {
+
+                    },
+                    getLastSavedTime = {
+                        50
+                    },
+                    showError = {
+                        errorState.value =  Pair(true, "введите правильный код")
+                    }
+                )
+            }
+        }
+        composeTestRule.onRoot().printToLog("currentLabelExists")
+        composeTestRule.mainClock.autoAdvance = false
+        composeTestRule.mainClock.advanceTimeBy(5000)
+        composeTestRule.onNodeWithContentDescription(requestNewSmsButton).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithContentDescription(requestNewSmsText)
+            .assertIsDisplayed()
+        composeTestRule
+            .onNodeWithContentDescription(disabledSendNewSmsButton)
+            .assertDoesNotExist()
+
+        composeTestRule.onNodeWithTag(SMSCodeView).performTextInput("")
+        composeTestRule
+            .onNodeWithContentDescription(getTokenButton)
+            .performClick()
+        composeTestRule.mainClock.advanceTimeBy(1000)
+        Thread.sleep(3000)
+        composeTestRule.onNodeWithTag(ErrorSnackbar).assertIsDisplayed()
+        composeTestRule.mainClock.advanceTimeBy(5000)
+    }
 
     @Test
     fun authScreen_count_down_test() {
@@ -91,7 +145,7 @@ class AuthScreenTest {
             HelloComposeTheme {
                 authScreen(
                     loading = false,
-                    showError = Pair(false, ""),
+                    errorState = Pair(false, ""),
                     sendNewSmsCodeButtonEnabled = sendNewSmsCodeButtonEnabled.value,
                     disableSendNewCodeView = {
                         sendNewSmsCodeButtonEnabled.value = true
@@ -108,7 +162,8 @@ class AuthScreenTest {
                     },
                     getLastSavedTime = {
                         50
-                    }
+                    },
+                    showError = {}
                 )
             }
         }

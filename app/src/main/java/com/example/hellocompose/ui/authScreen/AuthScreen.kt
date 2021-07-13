@@ -5,13 +5,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import com.example.hellocompose.ui.theme.*
@@ -22,17 +22,19 @@ import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
 val circularProgressIndicator = "CircularProgressIndicator"
+@ExperimentalComposeUiApi
 @ExperimentalAnimatedInsets
 @Composable
 fun authScreen(
     loading: Boolean,
-    showError: Pair<Boolean, String>,
+    errorState: Pair<Boolean, String>,
     sendNewSmsCodeButtonEnabled: Boolean,
     disableSendNewCodeView: () -> Unit,
     enableSendNewCodeView: () -> Unit,
     sendNewSmsCode: () -> Unit,
     getToken: (smsCode: String) -> Unit,
     detachErrorSnackbar: () -> Unit,
+    showError:()->Unit,
     getLastSavedTime: (() -> Int)? = null
 ) {
 
@@ -83,9 +85,10 @@ fun authScreen(
                                 sendNewSmsCode()
                             }
                         }
-                    sendSMSCodeView { smsCode ->
-                        getToken(smsCode)
-                    }
+                    sendSMSCodeView(
+                        onSendButtonClick =  { smsCode -> getToken(smsCode)},
+                        onErrorAction = {showError()}
+                    )
                 }
             } else {
                 CircularProgressIndicator(
@@ -95,9 +98,9 @@ fun authScreen(
                         .align(Alignment.Center)
                 )
             }
-            if (showError.first) {
+            if (errorState.first) {
                 showErrorSnackbar(
-                    Modifier.align(Alignment.BottomCenter), showError.second
+                    Modifier.align(Alignment.BottomCenter), errorState.second
                 ) {
                     detachErrorSnackbar()
                 }
