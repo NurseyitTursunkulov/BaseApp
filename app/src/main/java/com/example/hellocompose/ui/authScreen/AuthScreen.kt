@@ -21,7 +21,7 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
-
+val circularProgressIndicator = "CircularProgressIndicator"
 @ExperimentalAnimatedInsets
 @Composable
 fun authScreen(
@@ -90,6 +90,7 @@ fun authScreen(
             } else {
                 CircularProgressIndicator(
                     modifier = Modifier
+                        .clearAndSetSemantics { contentDescription = circularProgressIndicator }
                         .size(60.dp)
                         .align(Alignment.Center)
                 )

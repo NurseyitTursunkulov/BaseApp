@@ -1,6 +1,7 @@
 package com.example.hellocompose.ui.util
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -16,6 +17,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -46,6 +48,8 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.TimeUnit
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 @Composable
 fun infoEnterField(
@@ -250,6 +254,7 @@ fun requestNewSmsText(modifier: Modifier) {
 const val requestNewSmsText = "requestNewSmsText"
 const val requestNewSmsButton = "requestNewSmsButton"
 const val countTimerText = "countTimerText"
+const val getTokenButton = "getTokenButton"
 
 @Composable
 fun requestNewSmsView(onClick: () -> Unit) {
@@ -296,7 +301,7 @@ fun requestNewSmsButton(modifier: Modifier, onClick: () -> Unit) {
             .then(modifier)
     )
 }
-
+val SMSCodeView = "SMSCodeView"
 @Composable
 fun sendSMSCodeView(onSendButtonClick: (smsCode: String) -> Unit) {
     Spacer(modifier = Modifier.padding(8.dp))
@@ -316,10 +321,17 @@ fun sendSMSCodeView(onSendButtonClick: (smsCode: String) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(shape = RoundedCornerShape(4.dp))
-                .navigationBarsWithImePadding(),
+                .navigationBarsWithImePadding()
+                .testTag(SMSCodeView )
+            ,
             trailingIcon = {
                 Text(
                     "продолжить", color = Color.White, modifier = Modifier
+                        .clickable {
+                            if (telefon.isDigit() && telefon.isNotEmpty()) {
+                                onSendButtonClick(telefon)
+                            }
+                        }
                         .background(
                             brush = Brush.horizontalGradient(
                                 colors = listOf(
@@ -329,11 +341,10 @@ fun sendSMSCodeView(onSendButtonClick: (smsCode: String) -> Unit) {
                                 )
                             )
                         )
+                        .clearAndSetSemantics { contentDescription = getTokenButton }
                         .height(TextFieldDefaults.MinHeight - 2.dp)
                         .padding(horizontal = 16.dp, vertical = 16.dp)
-                        .clickable {
-                            onSendButtonClick(telefon)
-                        }
+
                 )
             })
 
@@ -341,6 +352,11 @@ fun sendSMSCodeView(onSendButtonClick: (smsCode: String) -> Unit) {
     Spacer(modifier = Modifier.padding(156.dp))
 }
 
+fun String.isDigit():Boolean{
+    val pattern = Pattern.compile("^[0-9]*?[0-9]*\$");
+    val matcher = pattern.matcher(this);
+   return matcher.find()
+}
 
 @Composable
 fun showErrorSnackbar(
