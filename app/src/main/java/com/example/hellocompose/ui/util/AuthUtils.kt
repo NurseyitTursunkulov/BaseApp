@@ -40,6 +40,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.hellocompose.R
+import com.example.hellocompose.ui.loginScreen.birthDateButtonTag
+import com.example.hellocompose.ui.loginScreen.birthDateErrorTag
+import com.example.hellocompose.ui.loginScreen.registerButtonTag
 import com.example.hellocompose.ui.theme.*
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -62,7 +65,9 @@ fun infoEnterField(
     valueContainsError: Boolean,
     textHeader: String,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    onvalueChanged: (newValue: String) -> Unit
+    errorTextModifier: Modifier = Modifier,
+    textFieldModifier: Modifier = Modifier,
+    onvalueChanged: (newValue: String) -> Unit,
 ) {
     Spacer(Modifier.height(16.dp))
     Row(
@@ -72,13 +77,13 @@ fun infoEnterField(
     ) {
         Text(textHeader, color = color)
         Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-        Text(errorText, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(errorText, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis,modifier = errorTextModifier)
 
     }
-    androidx.compose.material.OutlinedTextField(
+    OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp),
+            .height(60.dp).then(textFieldModifier),
         value = value,
         isError = valueContainsError,
         keyboardOptions = keyboardOptions,
@@ -115,7 +120,8 @@ fun birthDateButton(
             birthDateErrorText,
             color = color,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.testTag(birthDateErrorTag)
         )
     }
     val dialog = remember { MaterialDialog() }
@@ -135,7 +141,7 @@ fun birthDateButton(
         onClick = { dialog.show() },
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp),
+            .height(56.dp).testTag(birthDateButtonTag),
         border = BorderStroke(
             ButtonDefaults.OutlinedBorderSize,
             if (birthDateContainsError)
@@ -183,7 +189,8 @@ fun registerButton(
             onClick()
         },
         modifier = modifier
-            .navigationBarsWithImePadding(),
+            .navigationBarsWithImePadding()
+            .testTag(registerButtonTag),
 //            .align(alignment = Alignment.CenterHorizontally),  //avoid the oval shape
         border = BorderStroke(1.dp, itemsColor),
         colors = ButtonDefaults.outlinedButtonColors(contentColor = itemsColor)

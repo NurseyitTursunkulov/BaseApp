@@ -11,15 +11,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hellocompose.R
+import com.example.hellocompose.ui.authScreen.circularProgressIndicator
 import com.example.hellocompose.ui.theme.HelloComposeTheme
 import com.example.hellocompose.ui.util.*
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.ProvideWindowInsets
+
+val nameErrorTag                = "nameErrorTag"
+val nametextFieldTag                = "nametextFieldTag"
+val registerButtonTag               = "registerButtonTag"
+val birthDateButtonTag              = "birthDateButtonTag"
+val birthDateErrorTag              = "birthDateErrorTag"
+val surNameTag              = "surNameTag"
+val surNameErrorTag                 = "surNameErrorTag"
+val phoneNumberErrorTag                 = "phoneNumberErrorTag"
+val phoneNumberTag              = "phoneNumberTag"
+val emailErrorTag               = "emailErrorTag"
+val emailTag                = "emailTag"
 
 
 @OptIn(ExperimentalAnimatedInsets::class)
@@ -58,6 +74,8 @@ fun loginScreen(
                     infoEnterField(
                         color = nameColor,
                         errorText = nameErrorText,
+                        errorTextModifier = Modifier.testTag(nameErrorTag),
+                        textFieldModifier = Modifier.testTag(nametextFieldTag),
                         value = name,
                         valueContainsError = nameContainsError,
                         textHeader = stringResource(R.string.name),
@@ -77,6 +95,8 @@ fun loginScreen(
                     infoEnterField(
                         color = surNameColor,
                         errorText = surNameErrorText,
+                        errorTextModifier = Modifier.testTag(surNameErrorTag),
+                        textFieldModifier = Modifier.testTag(surNameTag),
                         value = surName,
                         valueContainsError = surNameContainsError,
                         textHeader = stringResource(R.string.surname)
@@ -96,6 +116,8 @@ fun loginScreen(
                     infoEnterField(
                         color = phoneNumberColor,
                         errorText = phoneNumberErrorText,
+                        errorTextModifier = Modifier.testTag(phoneNumberErrorTag),
+                        textFieldModifier = Modifier.testTag(phoneNumberTag),
                         value = phoneNumber,
                         valueContainsError = phoneNumberContainsError,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -117,6 +139,8 @@ fun loginScreen(
                     infoEnterField(
                         color = color,
                         errorText = emailErrorText,
+                        errorTextModifier = Modifier.testTag(emailErrorTag),
+                        textFieldModifier = Modifier.testTag(emailTag),
                         value = email,
                         valueContainsError = emailContainsError,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -148,7 +172,11 @@ fun loginScreen(
                     )
 
                     val context = LocalContext.current.resources
-                    registerButton(modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
+                    registerButton(
+                        modifier = Modifier
+                            .align(alignment = Alignment.CenterHorizontally)
+
+                    ) {
                         if (email.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
                                 .matches()
                         ) {
@@ -213,6 +241,7 @@ fun loginScreen(
             } else {
                 CircularProgressIndicator(
                     modifier = Modifier
+                        .clearAndSetSemantics { contentDescription = circularProgressIndicator }
                         .size(60.dp)
                         .align(Alignment.Center)
                 )
