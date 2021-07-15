@@ -19,6 +19,7 @@ import com.example.hellocompose.ui.theme.bottomNavBackColor
 import com.example.hellocompose.ui.theme.itemsColor
 import com.example.hellocompose.ui.theme.selectedItemBackColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import java.util.regex.Pattern
 
 @Composable
  fun changeStatusBarColor( color: Color = Color.Transparent) {

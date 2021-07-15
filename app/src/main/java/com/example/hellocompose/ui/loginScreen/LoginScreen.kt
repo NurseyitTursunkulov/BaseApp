@@ -25,17 +25,17 @@ import com.example.hellocompose.ui.util.*
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.ProvideWindowInsets
 
-val nameErrorTag                = "nameErrorTag"
-val nametextFieldTag                = "nametextFieldTag"
-val registerButtonTag               = "registerButtonTag"
-val birthDateButtonTag              = "birthDateButtonTag"
-val birthDateErrorTag              = "birthDateErrorTag"
-val surNameTag              = "surNameTag"
-val surNameErrorTag                 = "surNameErrorTag"
-val phoneNumberErrorTag                 = "phoneNumberErrorTag"
-val phoneNumberTag              = "phoneNumberTag"
-val emailErrorTag               = "emailErrorTag"
-val emailTag                = "emailTag"
+val nameErrorTag = "nameErrorTag"
+val nametextFieldTag = "nametextFieldTag"
+val registerButtonTag = "registerButtonTag"
+val birthDateButtonTag = "birthDateButtonTag"
+val birthDateErrorTag = "birthDateErrorTag"
+val surNameTag = "surNameTag"
+val surNameErrorTag = "surNameErrorTag"
+val phoneNumberErrorTag = "phoneNumberErrorTag"
+val phoneNumberTag = "phoneNumberTag"
+val emailErrorTag = "emailErrorTag"
+val emailTag = "emailTag"
 
 
 @OptIn(ExperimentalAnimatedInsets::class)
@@ -177,7 +177,7 @@ fun loginScreen(
                             .align(alignment = Alignment.CenterHorizontally)
 
                     ) {
-                        if (email.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+                        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
                                 .matches()
                         ) {
                             emailContainsError = true
@@ -219,10 +219,11 @@ fun loginScreen(
                             birthDateErrorText = ""
                         }
 
-                        if (!(birthDate.isEmpty()
-                                    && surName.isEmpty()
-                                    && name.isEmpty()
-                                    ) && android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+                        if (
+                            birthDate.isNotEmpty()
+                            && surName.isNotEmpty()
+                            && name.isNotEmpty()
+                            && android.util.Patterns.EMAIL_ADDRESS.matcher(email)
                                 .matches()
                             && pattern.matches(phoneNumber)
                         ) {
